@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido al Organizador de Torneos de Fútbol</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Bienvenido al Organizador de Torneos de Fútbol</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('formulario') }}">Agregar Usuario</a></li>
+                <li><a href="{{ url_for('ver_usuarios') }}">Ver Usuarios</a></li>
+                <li><a href="#">Gestionar Torneos</a></li>
+                <li><a href="#">Ver Resultados</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>¿Qué deseas hacer hoy?</h2>
+            <p>Selecciona una opción del menú para empezar a organizar tus torneos de fútbol.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Organizador de Torneos de Fútbol</p>
+    </footer>
+</body>
+</html>
