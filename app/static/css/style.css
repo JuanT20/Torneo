@@ -1,0 +1,42 @@
+:root {
+  --fondoPrincipal: #00a5b5;
+  --fondoSecion: #71c5e8; /*Secciones*/
+  --fondoComponentes: #e03e52; /*Componentes*/
+  --colorBotones: #ffd23f; /*Botones*/
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(to right, #001c55 0%, #00072d 100%);
+}
+
+.contentDiv {
+  width: 1157px;
+  height: 546;
+  padding: 5px;
+  border-radius: 10px;
+
+  background: linear-gradient(to bottom, #d9d9d9 0%, #737373 100%);
+  position: relative;
+  backdrop-filter: blur(100%); /* Efecto de difuminado */
+}
+.form-torneo {
+  margin-left: 10px;
+}
+.form-control,
+.form-select {
+  width: 300px;
+}
+.btn {
+  background: var(--colorBotones);
+}
+/* .contentTorneo {
+  position: relative;
+  z-index: 1; 
+  padding: 20px;
+  color: white; } */
