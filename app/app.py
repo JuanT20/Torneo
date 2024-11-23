@@ -1,22 +1,19 @@
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask
+from routes.main import app_routes  # Importa las rutas
 
-app = Flask(__name__, static_folder='static', template_folder='templates')
 
-@app.route('/')
-def home():
-    return render_template('base.html')
+def create_app():
+    app = Flask(__name__)
+    app.secret_key = 'secret_key'
 
-@app.route('/dashboard')
-def inicio():
-    return render_template('dashboard.html')
 
-@app.route('/configuracion')
-def configuracion():
-    return render_template('configuracion.html')
 
-@app.route('/addTeams')
-def addTeams():
-    return render_template('equipos.html')
+
+
+    # Registro de rutas
+    app.register_blueprint(app_routes)
+    return app
 
 if __name__ == '__main__':
+    app = create_app()
     app.run(debug=True)

@@ -11,7 +11,7 @@ document.getElementById("nEquipos").addEventListener("change", function () {
 
     formGroup.innerHTML = `
               <h5>Equipos ${i}</h5>
-              
+
           `;
 
     formtorneo.appendChild(formGroup);

@@ -32,12 +32,13 @@
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
               <li class="nav-item">
-                <a class="nav-link" href="#" data-page="dashboard">Inicio</a>
+                <a class="nav-link" href="#">Inicio</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#" data-page="configuracion"
-                  >Configuración</a
-                >
+                <a class="nav-link" href="#">Configuración</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" id="logout">Cerrar Sesion</a>
               </li>
             </ul>
           </div>
@@ -51,7 +52,9 @@
     </main>
     <footer></footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/registroEquipos.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/registroTorneo.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/logout.js') }}"></script>
   </body>
 </html>

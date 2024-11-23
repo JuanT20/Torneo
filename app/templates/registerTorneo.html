@@ -1,0 +1,92 @@
+{% extends 'base.html' %} {% block content %}
+<div class="contentTorneo">
+  <h1 class="text-center">Torneo</h1>
+  <div class="row">
+    <div class="col-md-8">
+      <form class="form-torneo" id="formTorneo">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="nombre" class="form-label">Nombre</label>
+              <input
+                type="text"
+                class="form-control"
+                name="nombreTorneo"
+                id="nombreTorneo"
+                placeholder="Nombre del torneo"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="tipo torneo" class="form-label">Tipo</label>
+              <select id="tipoTorneo" class="form-select" required>
+                <option selected>Seleccione</option>
+                <option>Futbol 11</option>
+                <option>Futbol 9</option>
+                <option>Futbol 8</option>
+                <option>Futbol 7</option>
+                <option>Futbol Sala</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="formato torneo" class="form-label">Formato</label>
+              <select id="formatoTorneo" class="form-select" required>
+                <option selected>Seleccione</option>
+                <option>Todos contra todos</option>
+                <option>Eliminacion Directa</option>
+                <option>Liga</option>
+                <option>Grupos</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="numero equipos" class="form-label"
+                >Numero de equipos</label
+              >
+              <input
+                type="number"
+                class="form-control"
+                id="nEquipos"
+                name="nEquipos"
+                required
+              />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-4">
+              <label for="">Fecha de Inicio</label>
+              <input
+                class="form-control"
+                type="date"
+                name="fechaIni"
+                id="fechaIni"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="">Fecha de Finalizacion</label>
+              <input
+                class="form-control"
+                type="date"
+                name="fechaFin"
+                id="fechaFin"
+                required
+              />
+            </div>
+
+            <button type="submit" class="btn btn-warning mt-5">
+              Crear Torneo
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="col-md-4 mb-4">
+      <img
+        src="{{url_for('static', filename='img/img-torneo.svg')}}"
+        alt="Img torneo"
+        srcset=""
+      />
+    </div>
+  </div>
+</div>
+{% endblock %}
