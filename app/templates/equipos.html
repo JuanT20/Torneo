@@ -1,23 +1,46 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'layout.html' %} {% block content %}
 <div class="contentTorneo">
-  <h1 class="text-center">Champions</h1>
+  <h1 class="text-center">Equipos</h1>
   <div class="row">
-    <div class="col-md-8">
-      <form class="form-equipos">
-        <div class="row">
-          <div class="col-md-6">
-            <div class="mb-3">
-             
-          </div>
-        </div>
-      </form>
+    <div class="table-responsive-lg">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Equipo</th>
+            <th scope="col">Escudo</th>
+            <th scope="col">Acciones</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for equipo in equipos %}
+          <tr>
+            <td>{{ loop.index}}</td>
+            <td>{{ equipo.nombre}}</td>
+            <td>
+              <img
+                src="{{ equipo.escudo}}"
+                alt="escudo de {{equipo.nombre}}"
+                style="width: 20px; height: 20px"
+              />
+            </td>
+            <td>
+              <button class="btn btn-warning btn-sm">Registro Jugadores</button>
+              <button class="btn btn-warning btn-sm">Ver Equipo</button>
+            </td>
+            <td>
+              <button class="btn btn-warning btn-sm">Editar</button>
+              <button class="btn btn-warning btn-sm">Eliminar</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
+
     <div class="col-md-4 mb-4">
-      <img
-        src="{{url_for('static', filename='img/')}}"
-        alt=""
-        srcset=""
-      />
+      <img src="{{url_for('static', filename='img/')}}" alt="" srcset="" />
     </div>
   </div>
 </div>

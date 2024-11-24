@@ -17,6 +17,14 @@ body {
   height: 100vh;
 }
 
+nav {
+  background-color: #00072d;
+}
+.nav-link,
+.navbar-brand {
+  color: #ffffff;
+}
+
 .contentDiv {
   width: 1157px;
   height: 546;

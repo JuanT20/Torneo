@@ -20,6 +20,9 @@ formTorneo.addEventListener("submit", function (event) {
     fechaFin: fechaFin,
   };
 
+  // Guardar el número de equipos en localStorage
+  localStorage.setItem("numeroEquipos", numeroEquipos);
+
   // Enviar los datos al backend usando Fetch API
   fetch("/register-torneo", {
     method: "POST",
@@ -31,7 +34,8 @@ formTorneo.addEventListener("submit", function (event) {
     .then((response) => response.json())
     .then((data) => {
       if (data.mensaje) {
-        swal("Exitoso!", "Registro del Torneo!", "success"); // mensaje de éxito
+        //swal("Exitoso!", "Registro del Torneo!", "success"); // mensaje de éxito
+        window.location.href = data.redirect_url;
         formTorneo.reset();
       } else if (data.error) {
         swal("Oops!", "Ocurrió un error en el registro!", "error"); //mensaje de error

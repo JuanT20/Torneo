@@ -5,6 +5,8 @@ from routes.main import app_routes  # Importa las rutas
 def create_app():
     app = Flask(__name__)
     app.secret_key = 'secret_key'
+    UPLOAD_FORDER = 'static/img/escudos'
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FORDER
 
 
 

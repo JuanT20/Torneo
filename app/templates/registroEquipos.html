@@ -1,0 +1,25 @@
+{% extends 'layout.html' %} {% block content %}
+<div class="contentTorneo">
+  <h1 class="text-center mb-3">Torneo</h1>
+  <div class="row">
+    <div class="col-md-8">
+      <form class="form-torneo" id="formEquipos">
+        <!-- Contenedor donde se agregarán los inputs -->
+        <div id="contenedorEquipos"></div>
+        <div class="mt-4 text-center">
+          <button class="btn btn-warning" type="button" id="rEquipos">
+            Registrar
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="col-md-4 mb-4">
+      <img
+        src="{{url_for('static', filename='img/img-torneo.svg')}}"
+        alt="Img torneo"
+        srcset=""
+      />
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -82,3 +82,26 @@ def insertar_torneo(id_usuario,nombreTorneo,tipoTorneo,formatoTorneo,numeroEquip
         cursor.close()
         conecxion.close()
 
+def save_team_to_db(team_name,logo_path):
+    conexion = get_connection()
+    cursor = conexion.cursor()
+   
+    try:
+        query = "INSERT INTO equipos (nombre, escudo) VALUES (%s, %s)"
+        cursor.execute(query, (team_name, logo_path))
+    finally:
+        conexion.commit()
+        conexion.close()     
+
+#Obtener los equipos
+def get_teams():
+    conexion = get_connection()
+    cursor = conexion.cursor(dictionary=True)
+    try:
+        query = "SELECT * FROM equipos"
+        cursor.execute(query)
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conexion.close()
+    

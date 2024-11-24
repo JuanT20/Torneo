@@ -1,16 +1,20 @@
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for,session
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for,session,current_app
+from utils.funtions import allowed_file,save_logo
+from models.db import insertar_torneo,verificar_usuario,insertar_usuario,save_team_to_db,get_teams
+import os
 
-from models.db import insertar_torneo,verificar_usuario,insertar_usuario
 
 
 app_routes = Blueprint('app_routes', __name__)  # Creamos una instancia de Flask
 
-# Ruta principal: Landing Page
+# Inicio Ruta principal: Landing Page
 @app_routes.route('/')
 def landing():
     return render_template('index.html')
 
+# Fin Ruta principal: Landing Page
 
+#Inicio Ruta Login
 @app_routes.route('/login',methods=['GET','POST'])
 def login():
     if request.method == 'GET':
@@ -44,12 +48,17 @@ def login():
 
          # Respuesta exitosa
         return jsonify({'mensaje': 'Login correcto', 'redirect_url': '/register-torneo'}), 200
-    
+#Fin Ruta Login
+
+#Inicio Ruta Logout   
 @app_routes.route('/logout', methods=['GET'])
 def logout():
     session.clear()  # Elimina todos los datos de la sesión
     return jsonify({'mensaje': 'Sesión cerrada correctamente'}), 200
 
+#Fin Ruta Logout
+
+#Inicio Ruta singUp
 @app_routes.route('/singUp', methods=['GET', 'POST'])
 def singUp():
     
@@ -78,7 +87,9 @@ def singUp():
             return jsonify({'mensaje': 'Usuario registrado correctamente', 'redirect_url': '/login'}), 200
         except Exception as e:
             return jsonify({'error': str(e)}), 500
+#Fin Ruta singUp
 
+# Inicio Ruta Dashboard
 @app_routes.route('/dashboard')
 def dashboard():
     # Verifica si el usuario está autenticado
@@ -88,6 +99,9 @@ def dashboard():
     id_usuario = session['id_usuario']
     return render_template('dashboard.html', id_usuario=id_usuario)
 
+# Fin Ruta Dashboard
+
+#Inicio Ruta register-torneo
 @app_routes.route('/register-torneo', methods=['GET','POST'])
 def addTorneos():
     if request.method == 'GET':
@@ -117,12 +131,63 @@ def addTorneos():
         
         try:
             insertar_torneo(id_usuario,nombreTorneo, tipoTorneo, formatoTorneo, numeroEquipos, fechaInicio, fechaFin)
-            return jsonify({'mensaje': f'Torneo "{nombreTorneo}" registrado correctamente'}), 201
+            return jsonify({'mensaje': 'Registro correcto', 'redirect_url': '/register-equipos'}), 200
         except Exception as e:
             return jsonify({'error': str(e)}), 500
+#Fin Ruta register-torneo
 
+#Inicio Ruta register-equipos
+@app_routes.route('/register-equipos', methods=['GET', 'POST'])
+def addEquipos():
+    if request.method == 'GET':
+        return render_template('registroEquipos.html')
+
+    if request.method == 'POST':
+        try:
+            equipos = request.form.to_dict()
+            archivos = request.files
+
+            for key, value in equipos.items():
+                if key.startswith("equipo"):
+                    equipo_index = key.replace("equipo", "")
+                    team_name = value
+                    team_logo = archivos.get(f"escudo{equipo_index}")
+
+                    # Verificar si se subió un archivo válido
+                    if team_logo and allowed_file(team_logo.filename):
+                        logo_path = save_logo(team_logo, current_app.config['UPLOAD_FOLDER'])
+                    else:
+                        # Usar la imagen predeterminada
+                        logo_path = os.path.join('static', 'img', 'escudos', 'default-escudo.svg')
+
+                    # Guardar el equipo y su logo en la base de datos
+                    save_team_to_db(team_name, logo_path)
+
+            return jsonify({'success': True, 'redirect_url': '/equipos'}), 200
+
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+#Fin Ruta register-equipos
     
-  
+        
+# Inicio Ruta equipos
+@app_routes.route('/equipos', methods=['GET'])
+def equipos():
+    equipos = get_teams() #Obtenemos los equipos
+    return render_template('equipos.html', equipos=equipos)
+
+# FinRuta equipos
+
+#Inicio Ruta register-jugadores
+
+@app_routes.route('/register-jugadores', methods=['GET', 'POST'])
+def addJugadores():
+    if request.method == 'GET':
+        return render_template('registroJugadores.html')
+    
+    
+        
+#Fin Ruta register-jugadores
 
 
 
