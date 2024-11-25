@@ -104,4 +104,16 @@ def get_teams():
     finally:
         cursor.close()
         conexion.close()
+        
+#Registrar los jugadores en los equipos
+def insertar_jugadores(idEquipo,idJugador,nombre, posicion, fechaNac, edad,         nacionalidad, sexo):
+    conexion = get_connection()
+    cursor = conexion.cursor()
+    try:
+        query = "INSERT INTO jugadores (id_jugador,id_equipo,nombre,posicion,fecha_nacimiento,edad,nacionalidad,sexo) VALUES (%s, %s, %s, %s, %s,%s,%s,%s)"
+        cursor.execute(query, (idJugador,idEquipo,nombre, posicion, fechaNac, edad,nacionalidad, sexo))
+        conexion.commit()
+    finally:
+        cursor.close()
+        conexion.close()
     

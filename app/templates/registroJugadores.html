@@ -2,28 +2,64 @@
 <div class="contentTorneo">
   <h1 class="text-center mb-3">Equipo Aguilas</h1>
   <div class="row">
+    <div class="mb-3">
+      <a href="/equipos" class="btn btn-warning" type="button">
+        <i class="bi bi-arrow-left"></i>
+        Back
+      </a>
+    </div>
     <div class="col-md-4">
-      <form class="form-torneo" id="formEquipos">
+      <form class="form-torneo" id="formJugadores">
         <h4>Jugador</h4>
+        <input
+          type="hidden"
+          id="idEquipo"
+          name="idEquipo"
+          value="{{ id_equipo }}"
+        />
         <div class="mb-3">
           <label for="">Identificacion</label>
-          <input type="text" class="form-control" />
+          <input
+            type="text"
+            class="form-control"
+            id="identificacion"
+            name="identificacion"
+          />
         </div>
         <div class="mb-3">
           <label for="">Nombre</label>
-          <input type="text" class="form-control" />
+          <input type="text" class="form-control" id="nombre" name="nombre" />
+        </div>
+        <div class="mb-3">
+          <label for="">Posicion</label>
+          <input
+            type="text"
+            class="form-control"
+            id="posicion"
+            name="posicion"
+          />
         </div>
         <div class="mb-3">
           <label for="">Fecha Nacimiento</label>
-          <input type="text" class="form-control" />
+          <input
+            type="date"
+            class="form-control"
+            id="fechaNac"
+            name="fechaNac"
+          />
         </div>
         <div class="mb-3">
           <label for="">Edad</label>
-          <input type="text" class="form-control" />
+          <input type="text" class="form-control" id="edad" name="edad" />
         </div>
         <div class="mb-3">
           <label for="">Nacionalidad</label>
-          <input type="text" class="form-control" />
+          <input
+            type="text"
+            class="form-control"
+            id="nacionalidad"
+            name="nacionalidad"
+          />
         </div>
         <label for="">Sexo</label>
         <div class="form-check display-flex">
@@ -31,7 +67,7 @@
             class="form-check-input"
             type="checkbox"
             value=""
-            id="flexCheckDefault"
+            id="hombre"
           />
           <label class="form-check-label" for="flexCheckDefault">
             Hombre
@@ -42,10 +78,13 @@
             class="form-check-input"
             type="checkbox"
             value=""
-            id="flexCheckChecked"
+            id="mujer"
             checked
           />
           <label class="form-check-label" for="flexCheckChecked"> Mujer </label>
+        </div>
+        <div class="mt-2">
+          <button class="btn btn-warning" type="submit">Agregar</button>
         </div>
       </form>
     </div>

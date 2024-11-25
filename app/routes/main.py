@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for,session,current_app
 from utils.funtions import allowed_file,save_logo
-from models.db import insertar_torneo,verificar_usuario,insertar_usuario,save_team_to_db,get_teams
+from models.db import insertar_torneo,verificar_usuario,insertar_usuario,save_team_to_db,get_teams,insertar_jugadores
 import os
 
 
@@ -183,11 +183,45 @@ def equipos():
 @app_routes.route('/register-jugadores', methods=['GET', 'POST'])
 def addJugadores():
     if request.method == 'GET':
-        return render_template('registroJugadores.html')
+         # Obtener el ID del equipo desde la URL
+        id_equipo = request.args.get('id_equipo')  
+        if not id_equipo:
+            return "ID del equipo no proporcionado", 400  # Error si falta el ID
+
+        return render_template('registroJugadores.html', id_equipo=id_equipo)
     
-    
+    if request.method == 'POST':
+        data = request.get_json()  # Recibir datos en formato JSON
+
+        # Extraer datos del JSON
+        idEquipo = data.get('idEquipo')
+        idJugador = data.get('idJugador')
+        nombre = data.get('nombre')
+        posicion = data.get('posicion')
+        fechaNac = data.get('fechaNac')
+        edad = data.get('edad')
+        nacionalidad = data.get('nacionalidad')
+        sexo = data.get('sexo')
+
+        # Validaciones básicas
+        if not idEquipo or not idJugador or not nombre or not posicion or not fechaNac or not edad or not nacionalidad or not sexo:
+            return jsonify({'error': 'Todos los campos son obligatorios'}), 400
+
+        try:
+            # Llamar a la función para insertar en la base de datos
+            insertar_jugadores(idEquipo, idJugador, nombre, posicion, fechaNac, edad, nacionalidad, sexo)
+            return jsonify({'mensaje': 'Registro correcto'}), 200
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
         
 #Fin Ruta register-jugadores
+
+#Inicio ruta Fixtures
+
+@app_routes.route('/fixtures', methods=['GET'])
+def fixtures():
+    return render_template('fixtures.html')
+#Fin ruta Fixtures
 
 
 
