@@ -51,3 +51,56 @@ nav {
   z-index: 1; 
   padding: 20px;
   color: white; } */
+
+/* Estilos landing page */
+.hero-section {
+  background: #00072d;
+  background: linear-gradient(180deg, #001c55, #00072d);
+  height: 100vh;
+  color: white;
+}
+
+.hero-content {
+  padding-top: 80px;
+}
+
+.auth-buttons .btn {
+  min-width: 150px;
+  margin: 0 10px;
+}
+
+.features-section {
+  padding: 80px 0;
+  background-color: #edf7f6;
+}
+
+.feature-card {
+  text-align: center;
+  padding: 30px;
+  margin-bottom: 30px;
+  background: #ffd23f;
+  border-radius: 10px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+footer {
+  background-color: #00072d;
+  color: white;
+  padding: 40px 0;
+}
+
+.social-links a {
+  color: white;
+  margin: 0 10px;
+  text-decoration: none;
+}
+
+.social-links a:hover {
+  color: #ffd23f;
+}
+
+/*Estilos Login*/
+.content-a a {
+  text-decoration: none;
+  color: #ffffff;
+}

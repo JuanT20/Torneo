@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TorneosPro - Organiza tus torneos de fútbol</title>
+    <link
+      rel="stylesheet"
+      href="{{url_for('static',filename='css/style.css')}}"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Hero Section con Navegación -->
+    <section class="hero-section">
+      <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+          <a class="navbar-brand" href="#">KickOff</a>
+          <div class="auth-buttons d-flex">
+            <a href="/login" class="btn btn-outline-light">Iniciar Sesión</a>
+            <a href="/signup" class="btn btn-warning">Registrarse</a>
+          </div>
+        </div>
+      </nav>
+
+      <div class="container hero-content text-center">
+        <h1 class="display-4 mb-4">
+          Organiza Torneos de Fútbol como un Profesional
+        </h1>
+        <p class="lead mb-5">
+          Gestiona equipos, programa partidos y lleva estadísticas en tiempo
+          real con nuestra plataforma todo en uno.
+        </p>
+        <div class="auth-buttons">
+          <a href="/signup" class="btn btn-warning btn-lg">Comenzar Gratis</a>
+          <a href="#features" class="btn btn-outline-light btn-lg"
+            >Conoce Más</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+      <div class="container">
+        <h2 class="text-center mb-5">¿Por qué elegir KickOff?</h2>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="feature-card">
+              <h3>Gestión Simplificada</h3>
+              <p>Organiza torneos, equipos y calendarios sin complicaciones.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-card">
+              <h3>Estadísticas en Vivo</h3>
+              <p>
+                Actualiza resultados y visualiza estadísticas en tiempo real.
+              </p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-card">
+              <h3>Comunicación Efectiva</h3>
+              <p>Mantén a todos informados con notificaciones automáticas.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <h5>KickOff</h5>
+            <p>La plataforma líder en gestión de torneos de fútbol.</p>
+          </div>
+          <div class="col-md-4">
+            <h5>Enlaces Rápidos</h5>
+            <ul class="list-unstyled">
+              <li><a href="/login" class="text-light">Iniciar Sesión</a></li>
+              <li><a href="/signup" class="text-light">Registrarse</a></li>
+              <li>
+                <a href="#features" class="text-light">Características</a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-4">
+            <h5>Síguenos</h5>
+            <div class="social-links">
+              <a href="#"><i class="fab fa-facebook"></i> Facebook</a>
+              <a href="#"><i class="fab fa-twitter"></i> Twitter</a>
+              <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
+            </div>
+          </div>
+        </div>
+        <div class="text-center mt-4">
+          <p>&copy; 2024 TorneosPro. Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Font Awesome para iconos sociales -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+  </body>
+</html>
