@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for,session,current_app
-from utils.funtions import allowed_file,save_logo
-from models.db import insertar_torneo,verificar_usuario,insertar_usuario,save_team_to_db,get_teams,insertar_jugadores
+from utils.funtions import allowed_file,save_logo,generar_fixtures
+from models.db import insertar_torneo,verificar_usuario,insertar_usuario,save_team_to_db,get_teams,insertar_jugadores,get_tournaments
 import os
 
 
@@ -25,7 +25,7 @@ def login():
         
         correo = data.get('correo')
         contrasena = data.get('contrasena')
-        print(data)
+        # print(data)
          # Validaciones de campos
         if not correo or not correo.strip():
             return jsonify({'error': 'El correo es obligatorio'}), 400
@@ -43,11 +43,20 @@ def login():
         
          # Si el usuario es válido, almacena su información en la sesión
         session['id_usuario'] = usuario['id_usuario']  # Guarda el id_usuario en la sesión
+        id_usuario = usuario['id_usuario']
         
        
-
-         # Respuesta exitosa
-        return jsonify({'mensaje': 'Login correcto', 'redirect_url': '/register-torneo'}), 200
+ # Verificar si el usuario ya tiene torneos
+        torneos = get_tournaments(id_usuario)  # Asume que esta función devuelve los torneos de un usuario
+        
+        # Ajustar la URL de redirección dependiendo de si tiene torneos o no
+        if torneos:
+            redirect_url = '/dashboard'  # Si tiene torneos, redirigir al dashboard
+        else:
+            redirect_url = '/register-torneo'  # Si no tiene torneos, redirigir a la creación de torneos
+        
+        # Respuesta exitosa
+        return jsonify({'mensaje': 'Login correcto', 'redirect_url': redirect_url}), 200
 #Fin Ruta Login
 
 #Inicio Ruta Logout   
@@ -97,56 +106,67 @@ def dashboard():
         return jsonify({'error': 'No has iniciado sesión'}), 401
     
     id_usuario = session['id_usuario']
-    return render_template('dashboard.html', id_usuario=id_usuario)
+    torneos = get_tournaments(id_usuario)  # Obtén los torneos del usuario logueado
+
+    return render_template('dashboard.html', id_usuario=id_usuario, torneos=torneos)
+
 
 # Fin Ruta Dashboard
 
 #Inicio Ruta register-torneo
-@app_routes.route('/register-torneo', methods=['GET','POST'])
+@app_routes.route('/register-torneo', methods=['GET', 'POST'])
 def addTorneos():
     if request.method == 'GET':
         return render_template('registerTorneo.html')
     
     if request.method == 'POST':
-        
-        data = request.get_json() #Recibimos los datos en formato Json
-      
-        # Extraemos los datos correctamente desde el JSON
+        data = request.get_json()
+
+        # Extraemos datos
         nombreTorneo = data.get('nombreTorneo')
         tipoTorneo = data.get('tipoTorneo')
         formatoTorneo = data.get('formatoTorneo')
         numeroEquipos = data.get('numeroEquipos')
         fechaInicio = data.get('fechaInicio')
         fechaFin = data.get('fechaFin')
-        
+
         id_usuario = session.get('id_usuario')
         if not id_usuario:
-            return jsonify({'error:', 'Usuario no autenticado'}), 401
-        
-        if not nombreTorneo or not tipoTorneo or not formatoTorneo or not numeroEquipos or not fechaInicio or not fechaFin:
+            return jsonify({'error': 'Usuario no autenticado'}), 401
+
+        if not all([nombreTorneo, tipoTorneo, formatoTorneo, numeroEquipos, fechaInicio, fechaFin]):
             return jsonify({'error': 'Todos los campos son obligatorios'}), 400
-        
-        # if not nombreTorneo or nombreTorneo.strip() == '':
-        #     return jsonify({'error': 'El nombre del torneo es obligatorio'}), 400
-        
+
         try:
-            insertar_torneo(id_usuario,nombreTorneo, tipoTorneo, formatoTorneo, numeroEquipos, fechaInicio, fechaFin)
-            return jsonify({'mensaje': 'Registro correcto', 'redirect_url': '/register-equipos'}), 200
+            id_torneo = insertar_torneo(
+                id_usuario, nombreTorneo, tipoTorneo, formatoTorneo, numeroEquipos, fechaInicio, fechaFin
+            )
+            
+            # Redirigimos al registro de equipos con el ID del torneo
+            return jsonify({'mensaje': 'Registro correcto', 'redirect_url': f'/register-equipos?id_torneo={id_torneo}'}), 200
         except Exception as e:
             return jsonify({'error': str(e)}), 500
+
 #Fin Ruta register-torneo
 
 #Inicio Ruta register-equipos
 @app_routes.route('/register-equipos', methods=['GET', 'POST'])
 def addEquipos():
     if request.method == 'GET':
-        return render_template('registroEquipos.html')
+        id_torneo = request.args.get('id_torneo')
+        # print(f"ID del torneo recibido: {id_torneo}") 
+        if not id_torneo:
+            return jsonify({'error': 'ID del torneo no especificado'}), 400
+        
+        return render_template('registroEquipos.html', id_torneo=id_torneo)
 
     if request.method == 'POST':
-        try:
-            equipos = request.form.to_dict()
-            archivos = request.files
+        id_torneo = request.form.get('id_torneo')  # ID del torneo desde el formulario
+        # print(f"ID del torneo recibido: {id_torneo}")  # Debug
+        equipos = request.form.to_dict()
+        archivos = request.files
 
+        try:
             for key, value in equipos.items():
                 if key.startswith("equipo"):
                     equipo_index = key.replace("equipo", "")
@@ -157,24 +177,34 @@ def addEquipos():
                     if team_logo and allowed_file(team_logo.filename):
                         logo_path = save_logo(team_logo, current_app.config['UPLOAD_FOLDER'])
                     else:
-                        # Usar la imagen predeterminada
                         logo_path = os.path.join('static', 'img', 'escudos', 'default-escudo.svg')
 
-                    # Guardar el equipo y su logo en la base de datos
-                    save_team_to_db(team_name, logo_path)
+                    # Guardar equipo y vincularlo al torneo
+                    save_team_to_db(team_name, logo_path, id_torneo)
 
             return jsonify({'success': True, 'redirect_url': '/equipos'}), 200
 
         except Exception as e:
             return jsonify({'error': str(e)}), 500
+
 #Fin Ruta register-equipos
     
         
 # Inicio Ruta equipos
 @app_routes.route('/equipos', methods=['GET'])
 def equipos():
-    equipos = get_teams() #Obtenemos los equipos
-    return render_template('equipos.html', equipos=equipos)
+    # Obtener el ID del torneo desde los parámetros de la URL
+    id_torneo = request.args.get('id_torneo')
+    
+    if not id_torneo:
+        return jsonify({'error': 'ID del torneo no proporcionado'}), 400
+
+    try:
+        equipos = get_teams(id_torneo)  # Pasar el id_torneo a la función
+        return render_template('equipos.html', equipos=equipos, id_torneo=id_torneo)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 # FinRuta equipos
 
@@ -220,7 +250,21 @@ def addJugadores():
 
 @app_routes.route('/fixtures', methods=['GET'])
 def fixtures():
-    return render_template('fixtures.html')
+    id_torneo = request.args.get('id_torneo')
+
+    if not id_torneo:
+        return jsonify({'error': 'ID del torneo no proporcionado'}), 400
+
+    try:
+        equipos = get_teams(id_torneo)  # Obtener equipos del torneo
+        if not equipos:
+            return jsonify({'error': 'No hay equipos para este torneo'}), 404
+
+        fixtures = generar_fixtures(equipos)  # Generar los fixtures
+        return render_template('fixtures.html', fixtures=fixtures, id_torneo=id_torneo)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 #Fin ruta Fixtures
 
 

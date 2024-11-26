@@ -1,1 +1,39 @@
-{% extends 'layout.html' %} {% block content %} {% endblock %}
+{% extends 'layout.html' %} {% block content %}
+<div class="contentTorneo">
+  <h1 class="text-center">Torneos</h1>
+  <div class="row">
+    <div class="table-responsive-lg">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Torneo</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Formato</th>
+            <th scope="col">Fecha Inicio</th>
+            <th scope="col">Fecha Fin</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for torneo in torneos %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ torneo.nombre }}</td>
+            <td>{{ torneo.tipo_torneo }}</td>
+            <td>{{ torneo.formato_torneo }}</td>
+            <td>{{ torneo.fecha_inicio }}</td>
+            <td>{{ torneo.fecha_fin }}</td>
+            <td>
+              <button class="btn btn-warning btn-sm">Ver</button>
+              <button class="btn btn-warning btn-sm">Editar</button>
+              <button class="btn btn-danger btn-sm">Eliminar</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

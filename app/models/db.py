@@ -70,40 +70,84 @@ def insertar_usuario(nombre, correo, contrasena):
         conexion.close()
     
 # Función para insertar un equipo en la base de datos
-def insertar_torneo(id_usuario,nombreTorneo,tipoTorneo,formatoTorneo,numeroEquipos,fechaInicio,fechaFin):
-    conecxion = get_connection()
-    cursor = conecxion.cursor()
-
-    try:
-        query = "INSERT INTO torneos (id_usuario,nombre,tipo_torneo,formato_torneo,numero_equipos,fecha_inicio,fecha_fin) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-        cursor.execute(query, (id_usuario,nombreTorneo,tipoTorneo,formatoTorneo,numeroEquipos,fechaInicio,fechaFin))
-        conecxion.commit()
-    finally:
-        cursor.close()
-        conecxion.close()
-
-def save_team_to_db(team_name,logo_path):
+def insertar_torneo(id_usuario, nombreTorneo, tipoTorneo, formatoTorneo, numeroEquipos, fechaInicio, fechaFin):
     conexion = get_connection()
     cursor = conexion.cursor()
-   
-    try:
-        query = "INSERT INTO equipos (nombre, escudo) VALUES (%s, %s)"
-        cursor.execute(query, (team_name, logo_path))
-    finally:
-        conexion.commit()
-        conexion.close()     
+    id_torneo = None
 
-#Obtener los equipos
-def get_teams():
+    try:
+        query = """
+            INSERT INTO torneos (id_usuario, nombre, tipo_torneo, formato_torneo, numero_equipos, fecha_inicio, fecha_fin) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(query, (id_usuario, nombreTorneo, tipoTorneo, formatoTorneo, numeroEquipos, fechaInicio, fechaFin))
+        conexion.commit()
+
+        # Obtenemos el ID del torneo recién insertado
+        id_torneo = cursor.lastrowid
+    finally:
+        cursor.close()
+        conexion.close()
+    
+    return id_torneo  # Devolvemos el ID del torneo creado
+
+
+def save_team_to_db(team_name, logo_path, id_torneo):
+    conexion = get_connection()
+    cursor = conexion.cursor()
+
+    try:
+        # Insertar equipo
+        query_equipo = "INSERT INTO equipos (nombre, escudo) VALUES (%s, %s)"
+        cursor.execute(query_equipo, (team_name, logo_path))
+        id_equipo = cursor.lastrowid  # Obtenemos el ID del equipo recién creado
+
+        # Vincular equipo al torneo
+        query_torneo_equipo = "INSERT INTO torneo_equipos (id_torneo, id_equipo) VALUES (%s, %s)"
+        cursor.execute(query_torneo_equipo, (id_torneo, id_equipo))
+
+        conexion.commit()
+    finally:
+        cursor.close()
+        conexion.close()
+    
+
+#Obtener Torneos por Usuario
+def get_tournaments(id_usuario):
     conexion = get_connection()
     cursor = conexion.cursor(dictionary=True)
     try:
-        query = "SELECT * FROM equipos"
-        cursor.execute(query)
+        query = """
+            SELECT t.id_torneo, t.nombre, t.tipo_torneo, t.formato_torneo, 
+                   t.numero_equipos, t.fecha_inicio, t.fecha_fin 
+            FROM torneos t 
+            WHERE t.id_usuario = %s
+        """
+        cursor.execute(query, (id_usuario,))
         return cursor.fetchall()
     finally:
         cursor.close()
         conexion.close()
+
+
+
+#Obtener los equipos
+def get_teams(id_torneo):
+    conexion = get_connection()
+    cursor = conexion.cursor(dictionary=True)
+    try:
+        query = """
+            SELECT e.nombre, e.escudo 
+            FROM equipos e 
+            JOIN torneo_equipos t_e ON e.id_equipo = t_e.id_equipo 
+            WHERE t_e.id_torneo = %s
+        """
+        cursor.execute(query, (id_torneo,))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conexion.close()
+
         
 #Registrar los jugadores en los equipos
 def insertar_jugadores(idEquipo,idJugador,nombre, posicion, fechaNac, edad,         nacionalidad, sexo):

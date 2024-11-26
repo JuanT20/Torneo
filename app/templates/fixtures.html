@@ -1,40 +1,26 @@
 {% extends 'layout.html' %} {% block content %}
-<div class="flip-card">
-  <div class="flip-card-inner">
-    <div class="flip-card-front">
-      <p class="title">FLIP CARD</p>
-      <p>Hover Me</p>
-    </div>
-    <div class="flip-card-back">
-      <p class="title">BACK</p>
-      <p>Leave Me</p>
-    </div>
-  </div>
-</div>
-
-<div class="flip-card">
-  <div class="flip-card-inner">
-    <div class="flip-card-front">
-      <p class="title">FLIP CARD</p>
-      <p>Hover Me</p>
-    </div>
-    <div class="flip-card-back">
-      <p class="title">BACK</p>
-      <p>Leave Me</p>
-    </div>
-  </div>
-</div>
-
-<div class="flip-card">
-  <div class="flip-card-inner">
-    <div class="flip-card-front">
-      <p class="title">FLIP CARD</p>
-      <p>Hover Me</p>
-    </div>
-    <div class="flip-card-back">
-      <p class="title">BACK</p>
-      <p>Leave Me</p>
-    </div>
+<div class="contentFixtures">
+  <h1 class="text-center">Fixtures del Torneo</h1>
+  <div class="table-responsive-lg">
+    {% for ronda in fixtures %}
+    <h3>Ronda {{ ronda.ronda }}</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Local</th>
+          <th scope="col">Visitante</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for partido in ronda.partidos %}
+        <tr>
+          <td>{{ partido.local }}</td>
+          <td>{{ partido.visitante }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endfor %}
   </div>
 </div>
 {% endblock %}
