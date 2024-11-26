@@ -182,7 +182,7 @@ def addEquipos():
                     # Guardar equipo y vincularlo al torneo
                     save_team_to_db(team_name, logo_path, id_torneo)
 
-            return jsonify({'success': True, 'redirect_url': '/equipos'}), 200
+            return jsonify({'success': True, 'redirect_url': f'/equipos?id_torneo={id_torneo}'}), 200
 
         except Exception as e:
             return jsonify({'error': str(e)}), 500
@@ -255,15 +255,36 @@ def fixtures():
     if not id_torneo:
         return jsonify({'error': 'ID del torneo no proporcionado'}), 400
 
-    try:
-        equipos = get_teams(id_torneo)  # Obtener equipos del torneo
-        if not equipos:
-            return jsonify({'error': 'No hay equipos para este torneo'}), 404
+    if not id_torneo.isdigit():
+        return jsonify({'error': 'ID del torneo debe ser un número'}), 400
 
-        fixtures = generar_fixtures(equipos)  # Generar los fixtures
+    try:
+        id_torneo = int(id_torneo)
+        equipos = get_teams(id_torneo)  # Obtener equipos del torneo desde la base de datos
+
+        if not equipos:
+            return jsonify({'error': 'No hay equipos registrados para este torneo'}), 404
+
+        # Generar los fixtures
+        fixtures = generar_fixtures(equipos)  # Debe devolver un listado de rondas con partidos estructurados
+        # Formato esperado:
+        # [
+        #     {
+        #         "ronda": 1,
+        #         "partidos": [
+        #             {"local": "Equipo A", "visitante": "Equipo B", "fecha": "2024-11-26", "hora": "15:00", "ubicacion": "Estadio 1", "arbitros": "Árbitro 1"},
+        #             {"local": "Equipo C", "visitante": "Equipo D", "fecha": "2024-11-27", "hora": "18:00", "ubicacion": "Estadio 2", "arbitros": "Árbitro 2"}
+        #         ]
+        #     },
+        #     ...
+        # ]
+
         return render_template('fixtures.html', fixtures=fixtures, id_torneo=id_torneo)
+    except ValueError:
+        return jsonify({'error': 'Error al procesar los datos del torneo'}), 400
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': f'Error inesperado: {str(e)}'}), 500
+
 
 #Fin ruta Fixtures
 
