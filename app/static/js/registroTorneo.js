@@ -20,9 +20,6 @@ formTorneo.addEventListener("submit", function (event) {
     fechaFin: fechaFin,
   };
 
-  // Guardar el número de equipos en localStorage
-  localStorage.setItem("numeroEquipos", numeroEquipos);
-
   // Enviar los datos al backend usando Fetch API
   fetch("/register-torneo", {
     method: "POST",

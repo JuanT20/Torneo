@@ -62,8 +62,46 @@
                   id="password"
                 />
               </div>
-              <div class="mb-3">
-                <button class="btn btn-warning" type="submit">Ingresar</button>
+
+              <div class="my-3">
+                <label for="text" class="text-light"
+                  >¿Desea crear un Torneo?</label
+                >
+              </div>
+
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="yesTorneo"
+                />
+                <label
+                  class="form-check-label text-light"
+                  for="flexCheckDefault"
+                >
+                  Si
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="noTorneo"
+                  checked
+                />
+                <label
+                  class="form-check-label text-light"
+                  for="flexCheckChecked"
+                >
+                  No
+                </label>
+              </div>
+              <div class="my-3">
+                <button class="btn btn-warning" type="submit">
+                  Registrarse
+                </button>
               </div>
             </form>
             <div class="mt-2 content-a">
@@ -77,5 +115,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="{{url_for('static', filename='js/singUp.js')}}"></script>
+    <script src="{{url_for('static', filename='js/script.js')}}"></script>
   </body>
 </html>

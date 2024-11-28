@@ -25,14 +25,23 @@
             <td>{{ torneo.fecha_inicio }}</td>
             <td>{{ torneo.fecha_fin }}</td>
             <td>
-              <button class="btn btn-warning btn-sm">Ver</button>
-              <button class="btn btn-warning btn-sm">Editar</button>
-              <button class="btn btn-danger btn-sm">Eliminar</button>
+              <a
+                href="/view-torneo/{{torneo.id_torneo}}"
+                class="btn btn-warning btn-sm"
+                >Ver</a
+              >
+              <a href="/edit-torneo" class="btn btn-warning btn-sm">Editar</a>
+              <a href="/delete-torneo" class="btn btn-warning btn-sm"
+                >Eliminar</a
+              >
             </td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
+      <div class="my-4">
+        <a href="/register-torneo" class="btn btn-warning">Crear Torneo</a>
+      </div>
     </div>
   </div>
 </div>

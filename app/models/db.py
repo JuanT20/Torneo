@@ -6,14 +6,15 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # Configuracion de la conexion a la base de datos
 def get_connection():
     try:
-        conecxion = mysql.connector.connect(
+        conexion = mysql.connector.connect(
         host='127.0.0.1',
         user='root',
         password='',
-        database='kickoff',
+        #database='kickoff',
+        database='torneo',
         port=3306
         )
-        return conecxion
+        return conexion
     
     except Error as e:
         print(f"Error al conectar a la base de datos: {e}")
@@ -56,14 +57,22 @@ def obtener_usuario_por_correo(correo):
         conexion.close()
 
 # Inserta un nuevo usuario
-def insertar_usuario(nombre, correo, contrasena):
+def insertar_usuario(nombre, correo, contrasena,rol):
     conexion = get_connection()
     cursor = conexion.cursor()
+    id_usuario = None
     try:
         # Encripta la contraseña antes de guardarla
         contrasena_hash = generate_password_hash(contrasena)
         query = "INSERT INTO usuarios (nombre, correo, contrasena) VALUES (%s, %s, %s)"
         cursor.execute(query, (nombre, correo, contrasena_hash))
+        
+        #Insertar el rol del usuario
+        query_rol = "INSERT INTO roles (id_usuario, rol) VALUES (%s, %s)"
+        id_usuario = cursor.lastrowid
+        cursor.execute(query_rol, (id_usuario,rol))
+
+        # Confirmar los cambios
         conexion.commit()
     finally:
         cursor.close()
@@ -107,6 +116,20 @@ def save_team_to_db(team_name, logo_path, id_torneo):
         cursor.execute(query_torneo_equipo, (id_torneo, id_equipo))
 
         conexion.commit()
+    finally:
+        cursor.close()
+        conexion.close()
+    
+
+#Obtener el tipo de usuario
+
+def get_user_role(id_usuario):
+    conexion = get_connection()
+    cursor = conexion.cursor(dictionary=True)
+    try:
+        query = "SELECT r.rol FROM roles r JOIN usuarios u ON r.id_usuario = u.id_usuario WHERE u.id_usuario = %s"
+        cursor.execute(query, (id_usuario,))
+        return cursor.fetchone()
     finally:
         cursor.close()
         conexion.close()
@@ -161,3 +184,15 @@ def insertar_jugadores(idEquipo,idJugador,nombre, posicion, fechaNac, edad,     
         cursor.close()
         conexion.close()
     
+    
+#Obtener el numero de equipos
+def get_numero_equipos(id_torneo):
+    conexion = get_connection()
+    cursor = conexion.cursor(dictionary=True)
+    try:
+        query = "SELECT numero_equipos FROM torneos WHERE id_torneo = %s"
+        cursor.execute(query,(id_torneo,))
+        return cursor.fetchone()
+    finally:
+        cursor.close()
+        conexion.close()

@@ -1,0 +1,42 @@
+{% extends 'layout.html' %} {% block content %}
+<div class="showTorneo ">
+   
+  <h1 class="text-center">Torneo</h1>
+  <div class="row text-center ">
+    <di class="col">
+        <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Equipos</h4>
+              <a href="/equipos/{{id_torneo}}" class="btn btn-warning my-3">Ver</a>
+            </div>
+        </div>
+    </di>
+    <di class="col">
+        <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Partidos</h4>
+              <a href="" class="btn btn-warning my-3">Ver</a>
+            </div>
+        </div>
+    </di>
+    <di class="col">
+        <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Estadisticas</h4>
+              <a href="" class="btn btn-warning my-3">Ver</a>
+            </div>
+          </div>
+    </di>
+   
+  </div>
+ 
+ 
+  <a href="/dashboard" class="btn btn-warning mx-2 my-5" type="button">
+    <i class="bi bi-arrow-left"></i>
+    Back
+  </a>
+  </div>
+  
+
+  {% endblock %}
+</div>

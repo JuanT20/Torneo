@@ -5,12 +5,16 @@ document
 
     let nombre = document.querySelector("#nombre").value;
     let correo = document.querySelector("#correo").value;
-    let contraseña = document.querySelector("#password").value;
+    let contrasena = document.querySelector("#password").value;
+    const torneo = document.querySelector("#yesTorneo").checked
+      ? "torneo"
+      : "noTorneo";
 
     let datoSingUp = {
       nombre: nombre,
       correo: correo,
-      password: contraseña,
+      password: contrasena,
+      torneo: torneo,
     };
 
     try {

@@ -14,9 +14,11 @@ def save_logo(file,upload_folder):
     # file.save(file_path)
     # return file_path
     try:
+        print(f"Escudo guardado en: {os.path.join('img', 'escudos', filename)}")
+
         file.save(file_path)
         print ("File saved successfully")
-        return file_path
+        return os.path.join('img', 'escudos', filename)
     except Exception as e:
         print(f"Error al guardar el escudo: {e}")
         return None
