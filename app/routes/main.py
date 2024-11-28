@@ -234,12 +234,13 @@ def addEquipos(id_torneo):
 # Inicio Ruta equipos
 @app_routes.route('/equipos/<int:id_torneo>', methods=['GET'])
 def equipos(id_torneo): 
-       
+    print("ID del torneo recibido:", id_torneo)   
     if not id_torneo:
         return jsonify({'error': 'ID del torneo no proporcionado'}), 400
     
     try:
         equipos = get_teams(id_torneo)  # Obtiene los equipos del torneo
+        
         return render_template('equipos.html', equipos=equipos, id_torneo=id_torneo)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -252,7 +253,8 @@ def equipos(id_torneo):
 @app_routes.route('/register-jugadores', methods=['GET', 'POST'])
 def addJugadores():
     if request.method == 'GET':
-         # Obtener el ID del equipo desde la URL
+        
+         #Obtener el ID del equipo desde la URL
         id_equipo = request.args.get('id_equipo')  
         if not id_equipo:
             return "ID del equipo no proporcionado", 400  # Error si falta el ID

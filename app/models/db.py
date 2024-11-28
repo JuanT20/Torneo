@@ -160,13 +160,19 @@ def get_teams(id_torneo):
     cursor = conexion.cursor(dictionary=True)
     try:
         query = """
-            SELECT e.nombre, e.escudo 
+            SELECT e.id_equipo, e.nombre, e.escudo 
             FROM equipos e 
             JOIN torneo_equipos t_e ON e.id_equipo = t_e.id_equipo 
             WHERE t_e.id_torneo = %s
         """
         cursor.execute(query, (id_torneo,))
-        return cursor.fetchall()
+        equipos = cursor.fetchall()
+        
+        # Reemplazar barras invertidas en la ruta de la imagen
+        for equipo in equipos:
+            equipo['escudo'] = equipo['escudo'].replace("\\", "/")
+    
+        return equipos
     finally:
         cursor.close()
         conexion.close()

@@ -27,14 +27,16 @@
             </td>
             <td>
               <a
-                href="{{ url_for('app_routes.addJugadores', id_equipo=equipo.id_equipo) }}"
-                class="btn btn-warning btn-sm"
+                href="#"
+                class="btn btn-warning btn-sm mx-3 registrar-jugadores"
+                data-id-equipo="{{ equipo.id_equipo }}"
               >
                 Registrar Jugadores
               </a>
-              <button class="btn btn-info btn-sm">Ver Equipo</button>
-              <button class="btn btn-primary btn-sm">Editar</button>
-              <button class="btn btn-danger btn-sm">Eliminar</button>
+
+              <button class="btn btn-warning btn-sm mx-3">Ver Equipo</button>
+              <button class="btn btn-warning btn-sm mx-3">Editar</button>
+              <button class="btn btn-warning btn-sm">Eliminar</button>
             </td>
           </tr>
           {% endfor %}

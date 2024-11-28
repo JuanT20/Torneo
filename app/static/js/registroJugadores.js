@@ -1,11 +1,20 @@
-// Capturar clic en los botones de "Registrar Jugadores"
-document.querySelectorAll("#btnRegistro").forEach((boton) => {
-  boton.addEventListener("click", function () {
-    const idEquipo = this.dataset.id; // Obtener el ID del equipo desde data-id
-    localStorage.setItem("idEquipo", idEquipo); // Guardar el ID en localStorage (opcional)
+// Selecciona todos los botones "Registrar Jugadores"
+const botonesRegistrar = document.querySelectorAll(".registrar-jugadores");
 
-    // Redirigir al formulario de registro con el ID del equipo como parámetro en la URL
-    window.location.href = `/register-jugadores?id_equipo=${idEquipo}`;
+// Asigna un evento de clic a cada botón
+botonesRegistrar.forEach((boton) => {
+  boton.addEventListener("click", (event) => {
+    event.preventDefault(); // Evita que el enlace haga su redirección predeterminada
+
+    // Captura el ID del equipo desde el atributo `data-id-equipo`
+    const idEquipo = boton.dataset.idEquipo;
+
+    if (idEquipo) {
+      // Redirige a la URL con el ID del equipo como parámetro
+      window.location.href = `/register-jugadores?id_equipo=${idEquipo}`;
+    } else {
+      console.error("ID del equipo no encontrado");
+    }
   });
 });
 
