@@ -33,16 +33,53 @@
           >
             <span class="navbar-toggler-icon"></span>
           </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
+          <div
+            class="collapse navbar-collapse d-flex justify-content-end"
+            id="navbarNav"
+          >
             <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link" href="/dashboard">Inicio</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Configuración</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#" id="logout">Cerrar Sesion</a>
+              <li class="nav-item dropdown ms-auto">
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="#"
+                  id="navbarUserDropdown"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <img
+                    src="{{url_for('static', filename='img/avatar.svg')}}"
+                    alt="Avatar"
+                    class="rounded-circle"
+                    style="
+                      width: 30px;
+                      height: 30px;
+                      object-fit: cover;
+                      background-color: white;
+                    "
+                  />
+                  Usuario
+                </a>
+                <ul
+                  class="dropdown-menu dropdown-menu-end"
+                  aria-labelledby="navbarUserDropdown"
+                >
+                  <li><p class="dropdown-item">{{correo}}</p></li>
+                  <li><a class="dropdown-item" href="/perfil">Perfil</a></li>
+                  <li>
+                    <a class="dropdown-item" href="/configuracion"
+                      >Configuración</a
+                    >
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider" />
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#" id="logout"
+                      >Cerrar Sesión</a
+                    >
+                  </li>
+                </ul>
               </li>
             </ul>
           </div>

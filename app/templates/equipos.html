@@ -34,8 +34,13 @@
                 Registrar Jugadores
               </a>
 
-              <button class="btn btn-warning btn-sm mx-3">Ver Equipo</button>
-              <button class="btn btn-warning btn-sm mx-3">Editar</button>
+              <a
+                href="{{ url_for('app_routes.verEquipo', id_equipo=equipo.id_equipo) }}"
+                class="btn btn-warning btn-sm mx-3"
+              >
+                Ver Equipo
+              </a>
+
               <button class="btn btn-warning btn-sm">Eliminar</button>
             </td>
           </tr>

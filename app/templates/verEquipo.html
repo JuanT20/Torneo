@@ -1,0 +1,44 @@
+{% extends 'layout.html' %} {% block content %}
+<div class="contentTorneo">
+  {% for equipo in equipos %}
+  <h1 class="text-center">{{ equipo.nombre }}</h1>
+  {% endfor %}
+  <div class="row">
+    <div class="my-3">
+      <a href="#" class="btn btn-warning mx-2" type="button">
+        <i class="bi bi-arrow-left"></i>
+        Back
+      </a>
+    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Posicion</th>
+          <th scope="col">Edad</th>
+          <th scope="col">Nacionalidad</th>
+          <th scope="col">Sexo</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for jugador in jugadores %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ jugador.nombre }}</td>
+          <td>{{ jugador.posicion }}</td>
+          <td>{{ jugador.edad }}</td>
+          <td>{{ jugador.nacionalidad }}</td>
+          <td>{{ jugador.sexo }}</td>
+          <td>
+            <a href="#" class="btn btn-warning btn-sm mx-3">Editar</a>
+            <a href="#" class="btn btn-warning btn-sm mx-3">Eliminar</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

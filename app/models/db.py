@@ -171,7 +171,7 @@ def get_teams(id_torneo):
         # Reemplazar barras invertidas en la ruta de la imagen
         for equipo in equipos:
             equipo['escudo'] = equipo['escudo'].replace("\\", "/")
-        print(equipos)
+        
         return equipos
     finally:
         cursor.close()
@@ -199,6 +199,19 @@ def get_numero_equipos(id_torneo):
         query = "SELECT numero_equipos FROM torneos WHERE id_torneo = %s"
         cursor.execute(query,(id_torneo,))
         return cursor.fetchone()
+    finally:
+        cursor.close()
+        conexion.close()
+        
+        
+#Obtener los jugadores
+def get_jugadores(id_equipo):
+    conexion = get_connection()
+    cursor = conexion.cursor(dictionary=True)
+    try:
+        query = "SELECT id_jugador, nombre, posicion, fecha_nacimiento, edad, nacionalidad, sexo FROM jugadores WHERE id_equipo = %s"
+        cursor.execute(query,(id_equipo,))
+        return cursor.fetchall()
     finally:
         cursor.close()
         conexion.close()

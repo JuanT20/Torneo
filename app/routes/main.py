@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for,session,current_app
 from utils.funtions import allowed_file,save_logo,generar_fixtures
-from models.db import insertar_torneo,verificar_usuario,insertar_usuario,save_team_to_db,get_teams,insertar_jugadores,get_tournaments,get_user_role,get_numero_equipos
+from models.db import insertar_torneo,verificar_usuario,insertar_usuario,save_team_to_db,get_teams,insertar_jugadores,get_tournaments,get_user_role,get_numero_equipos,get_jugadores
 import os
 
 
@@ -10,7 +10,16 @@ app_routes = Blueprint('app_routes', __name__)  # Creamos una instancia de Flask
 # Inicio Ruta principal: Landing Page
 @app_routes.route('/')
 def landing():
-    return render_template('index.html')
+    rol = session.get('rol')  # Obtener el rol del usuario
+    correo = session.get('correo')  # Obtener el correo del usuario (si está logueado)
+
+    if rol == 'espectador':  
+        # Renderizar la página con contenido personalizado para espectadores
+        return render_template('index.html', rol=rol, correo=correo)
+
+    # Renderizar la página principal para usuarios no logueados o roles diferentes
+    return render_template('index.html', rol=None)
+
 
 # Fin Ruta principal: Landing Page
 
@@ -46,6 +55,8 @@ def login():
         
          # Si el usuario es válido, almacena su información en la sesión
         session['id_usuario'] = usuario['id_usuario']  # Guarda el id_usuario en la sesión
+        session['correo'] = correo
+      
         id_usuario = usuario['id_usuario']
         
        
@@ -123,13 +134,19 @@ def singUp():
 #Inicio Ruta dashboard-landing
 @app_routes.route('/dashboard-landing')
 def dashboardLanding():
-    return render_template('dashboardLanding.html')
+    correo = session.get('correo')
+    if not correo:
+        return redirect('/login')
+    return render_template('dashboardLanding.html',correo=correo)
 #Fin Ruta dashboard-landing
 
 
 # Inicio Ruta Dashboard
 @app_routes.route('/dashboard')
 def dashboard():
+    correo = session.get('correo')
+    if not correo:
+        return redirect('/login')
     # Verifica si el usuario está autenticado
     if 'id_usuario' not in session:
         return jsonify({'error': 'No has iniciado sesión'}), 401
@@ -137,7 +154,7 @@ def dashboard():
     id_usuario = session['id_usuario']
     torneos = get_tournaments(id_usuario)  # Obtén los torneos del usuario logueado
 
-    return render_template('dashboard.html', id_usuario=id_usuario, torneos=torneos)
+    return render_template('dashboard.html', id_usuario=id_usuario, correo=correo ,torneos=torneos)
 
 
 # Fin Ruta Dashboard
@@ -362,15 +379,35 @@ def deleteTorneo():
 #Fin ruta delete-torneo
 
 #Inicio ruta paridos
-@app_routes.routes('/partidos',methods=['GET','POST'])
-def partidos():
+# @app_routes.routes('/partidos',methods=['GET','POST'])
+# def partidos():
 
-    if request.method == 'GET':
+    # if request.method == 'GET':
             
 
-    if request.method == 'POST':
+    # if request.method == 'POST':
     
 
 #Fin ruta paridos
 
+#Inicio Ruta verEquipos
+
+@app_routes.route('/ver-equipo', methods=['GET'])
+def verEquipo():
+    # Obtener el ID del equipo desde la URL
+    id_equipo = request.args.get('id_equipo')
+    
+    
+    if not id_equipo:
+        return "ID del equipo no proporcionado", 400  # Error si falta el ID
+    
+    # Aquí puedes hacer algo con `id_equipo` si es necesario
+    jugadores = get_jugadores(id_equipo)
+    return render_template('verEquipo.html', id_equipo=id_equipo, jugadores=jugadores)
+
+
+
+#Fin Ruta verEquipos
+
+#Eliminar jugadores
 

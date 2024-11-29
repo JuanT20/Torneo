@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask,g,session
 from routes.main import app_routes  # Importa las rutas
 
 
@@ -8,7 +8,8 @@ def create_app():
     UPLOAD_FORDER = 'static/img/escudos'
     app.config['UPLOAD_FOLDER'] = UPLOAD_FORDER
 
-
+    
+    
 
 
 
