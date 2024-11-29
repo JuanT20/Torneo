@@ -175,3 +175,8 @@ footer {
   color: white;
   transform: rotateY(180deg);
 }
+
+/*Estilos tabla cruces*/
+.input-table {
+  width: 200px;
+}
