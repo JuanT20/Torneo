@@ -13,7 +13,7 @@
 
     {% if ronda_actual %}
     <h3>Fecha {{ ronda_actual.ronda }}</h3>
-    <form action="" id="form-partidos">
+    <form id="form-partidos">
       <table class="table table-striped table-bordered">
         <thead class="thead-dark">
           <tr>
@@ -28,40 +28,41 @@
         <tbody>
           {% for partido in ronda_actual.partidos %}
           <tr>
-            <td>{{ partido.local }}</td>
-            <td>{{ partido.visitante }}</td>
             <td>
-              <input
-                class="form-control input-table"
-                type="date"
-                value="{{ partido.fecha }}"
-              />
+              {{ partido.local }}
+              <input type="hidden" value="{{partido.id_local}}" />
+            </td>
+            <td>
+              {{ partido.visitante }}
+              <input type="hidden" value="{{partido.id_local}}" />
+            </td>
+            <td>
+              <input class="form-control input-table" type="date" id="fecha" />
+            </td>
+            <td>
+              <input class="form-control input-table" type="time" id="hora" />
             </td>
             <td>
               <input
                 class="form-control input-table"
-                type="time"
-                value="{{ partido.hora }}"
+                type="text"
+                id="ubicacion"
               />
             </td>
             <td>
               <input
                 class="form-control input-table"
                 type="text"
-                value="{{ partido.ubicacion }}"
-              />
-            </td>
-            <td>
-              <input
-                class="form-control input-table"
-                type="text"
-                value="{{ partido.arbitros }}"
+                id="arbitro"
               />
             </td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
+      <button class="btn btn-warning mx-2" type="submit">
+        Guardar Cambios
+      </button>
     </form>
 
     <!-- Controles de paginación -->
@@ -91,7 +92,6 @@
                 href="?id_torneo={{ id_torneo }}&page={{ current_page + 1 }}"
                 >Siguiente</a
               >
-              <a href="#" class="btn btn-warning mb-2">Actualizar Cruces</a>
             </div>
           </li>
           {% endif %}

@@ -385,13 +385,32 @@ def deleteTorneo():
 #Fin ruta delete-torneo
 
 #Inicio ruta paridos
-# @app_routes.routes('/partidos',methods=['GET','POST'])
-# def partidos():
+@app_routes.route('/partidos', methods=['POST'])
+def guardar_partidos():
+    try:
+        data = request.get_json()  # Recibe el JSON desde el frontend
+        partidos = data.get('partidos', [])
 
-    # if request.method == 'GET':
-            
+        if not partidos:
+            return jsonify({'error': 'No se recibieron datos de partidos'}), 400
 
-    # if request.method == 'POST':
+        # Procesar y guardar cada partido
+        for partido in partidos:
+            id_local = partido.get('id_local')
+            id_visitante = partido.get('id_visitante')
+            fecha = partido.get('fecha')
+            hora = partido.get('hora')
+            ubicacion = partido.get('ubicacion')
+            arbitro = partido.get('arbitro')
+
+            # Lógica para guardar en la base de datos
+            guardar_partido(id_local, id_visitante, fecha, hora, ubicacion, arbitro)
+
+        return jsonify({'message': 'Partidos guardados correctamente'}), 200
+
+    except Exception as e:
+        return jsonify({'error': f'Error inesperado: {str(e)}'}), 500
+
     
 
 #Fin ruta paridos
