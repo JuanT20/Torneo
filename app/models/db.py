@@ -171,7 +171,7 @@ def get_teams(id_torneo):
         # Reemplazar barras invertidas en la ruta de la imagen
         for equipo in equipos:
             equipo['escudo'] = equipo['escudo'].replace("\\", "/")
-    
+        print(equipos)
         return equipos
     finally:
         cursor.close()

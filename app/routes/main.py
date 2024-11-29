@@ -218,7 +218,7 @@ def addEquipos(id_torneo):
                     if team_logo and allowed_file(team_logo.filename):
                         logo_path = save_logo(team_logo, current_app.config['UPLOAD_FOLDER'])
                     else:
-                        logo_path = os.path.join('static', 'img', 'escudos', 'default-escudo.svg')
+                        logo_path = os.path.join('../static', 'img', 'escudos', 'default-escudo.svg')
 
                     # Guardar equipo y vincularlo al torneo
                     save_team_to_db(team_name, logo_path, id_torneo)
@@ -234,7 +234,7 @@ def addEquipos(id_torneo):
 # Inicio Ruta equipos
 @app_routes.route('/equipos/<int:id_torneo>', methods=['GET'])
 def equipos(id_torneo): 
-    print("ID del torneo recibido:", id_torneo)   
+    #print("ID del torneo recibido:", id_torneo)   
     if not id_torneo:
         return jsonify({'error': 'ID del torneo no proporcionado'}), 400
     
@@ -361,6 +361,16 @@ def deleteTorneo():
     return render_template('')
 #Fin ruta delete-torneo
 
+#Inicio ruta paridos
+@app_routes.routes('/partidos',methods=['GET','POST'])
+def partidos():
 
+    if request.method == 'GET':
+            
+
+    if request.method == 'POST':
+    
+
+#Fin ruta paridos
 
 
