@@ -218,20 +218,88 @@ def get_jugadores(id_equipo):
         
 #Funcion guardar partidos
 
-def save_match(id_torneo, id_equipo_local, id_equipo_visitante, fecha, hora ):
+def save_match(id_torneo, id_equipo_local, id_equipo_visitante, fecha, hora,ubicacion,id_arbitro ):
     conexion = get_connection()
     cursor = conexion.cursor()
 
     # Crear la consulta SQL para insertar los datos
     query = """
-        INSERT INTO partidos (id_torneo, id_equipo_local, id_equipo_visitante, fecha, hora)
-        VALUES (%s, %s, %s, %s, %s )
+        INSERT INTO partidos (id_torneo, id_equipo_local, id_equipo_visitante, id_arbitro,fecha, hora,id_ubicacion)
+        VALUES (%s, %s, %s, %s, %s, %s, %s )
     """
 
     # Ejecutar la consulta con los valores proporcionados
-    cursor.execute(query, (id_torneo, id_equipo_local, id_equipo_visitante,  fecha, hora ))
+    cursor.execute(query, (id_torneo, id_equipo_local, id_equipo_visitante,  fecha, hora,ubicacion,id_arbitro ))
 
     # Confirmar los cambios y cerrar la conexión
     conexion.commit()
     cursor.close()
     conexion.close()
+    
+    
+    
+#Guardar las ubicaciones
+def save_ubicacion(id_torneo,lugar,cancha):
+    conexion = get_connection()
+    cursor = conexion.cursor()
+    
+    # Crear la consulta SQL para insertar los datos
+    query = """
+        INSERT INTO ubicaciones (lugar,cancha,id_torneo)
+        VALUES (%s, %s, %s)
+    """
+    # Ejecutar la consulta con los valores proporcionados
+    cursor.execute(query, (lugar,cancha,id_torneo,))
+    # Confirmar los cambios y cerrar la conexión
+    conexion.commit()
+    cursor.close()
+    conexion.close()
+
+
+
+#Guardar los arbitros
+def save_arbitro(id_arbitro,nombre,experiencia,id_torneo):
+    conexion = get_connection()
+    cursor = conexion.cursor()
+    
+    # Crear la consulta SQL para insertar los datos
+    query = """
+        INSERT INTO arbitros (id_arbitro,nombre,experiencia,id_torneo)
+        VALUES (%s, %s, %s, %s)
+    """
+    # Ejecutar la consulta con los valores proporcionados
+    cursor.execute(query, (id_arbitro,nombre,experiencia,id_torneo))
+    # Confirmar los cambios y cerrar la conexión
+    conexion.commit()
+    cursor.close()
+    conexion.close()
+
+
+    
+#Obtener las ubicaciones
+
+def get_ubicaciones(id_torneo):
+    conexion = get_connection()
+    cursor = conexion.cursor(dictionary=True)
+    try:
+        query = "SELECT id_ubicacion,lugar, cancha FROM ubicaciones WHERE id_torneo = %s"
+        cursor.execute(query,(id_torneo,))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conexion.close()
+        
+            
+#Obtener los arbitros
+
+def get_arbitros(id_torneo):
+    conexion = get_connection()
+    cursor = conexion.cursor(dictionary=True)
+    try:
+        query = "SELECT id_arbitro, nombre, experiencia FROM arbitros WHERE id_torneo = %s"
+        cursor.execute(query,(id_torneo,))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conexion.close()
+        

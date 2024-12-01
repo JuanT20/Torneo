@@ -47,18 +47,22 @@
           />
         </td>
         <td>
-          <select class="form-control input-table" type="text" id="ubicacion">
+          <select class="form-control input-table" id="ubicacion">
             <option value="">Seleccione</option>
-            {% for equipo in equipos %}
-            <option value="{{ equipo.id }}">{{ equipo.nombre }}</option>
+            {% for ubicacion in ubicaciones %}
+            <option value="{{ ubicacion.id_ubicacion }}">
+              {{ ubicacion.lugar }} - {{ ubicacion.cancha }}
+            </option>
             {% endfor %}
           </select>
         </td>
         <td>
-          <select class="form-control input-table" type="text" id="arbitro">
+          <select class="form-control input-table" id="arbitro">
             <option value="">Seleccione</option>
-            {% for equipo in equipos %}
-            <option value="{{ equipo.id }}">{{ equipo.nombre }}</option>
+            {% for arbitro in arbitros %}
+            <option value="{{ arbitro.id_arbitro }}">
+              {{ arbitro.nombre }}
+            </option>
             {% endfor %}
           </select>
         </td>
