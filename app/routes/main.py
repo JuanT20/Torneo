@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for,session,current_app
 from utils.funtions import allowed_file,save_logo,generar_fixtures
-from models.db import insertar_torneo,verificar_usuario,insertar_usuario,save_team_to_db,get_teams,insertar_jugadores,get_tournaments,get_user_role,get_numero_equipos,get_jugadores
+from models.db import insertar_torneo,verificar_usuario,insertar_usuario,save_team_to_db,get_teams,insertar_jugadores,get_tournaments,get_user_role,get_numero_equipos,get_jugadores,save_match
 import os
 
 
@@ -320,13 +320,13 @@ def fixtures():
     try:
         id_torneo = int(id_torneo)
         equipos = get_teams(id_torneo)  # Obtener equipos del torneo desde la base de datos
-
+        
         if not equipos:
             return jsonify({'error': 'No hay equipos registrados para este torneo'}), 404
 
         # Generar los fixtures
         fixtures = generar_fixtures(equipos)  # Lista completa de rondas con partidos
-
+        
         # Total de rondas
         total_rondas = len(fixtures)
 
@@ -337,19 +337,26 @@ def fixtures():
         # Obtiene solo la ronda correspondiente a la página actual
         ronda_actual = fixtures[page - 1]
 
-        return render_template(
-            'fixtures.html',
-            ronda_actual=ronda_actual,
-            id_torneo=id_torneo,
-            current_page=page,
-            total_pages=total_rondas
-        )
+        # Añadir soporte para solicitudes AJAX
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return render_template('fixtures_content.html', 
+                                   ronda_actual=ronda_actual,
+                                   id_torneo=id_torneo,
+                                   current_page=page,
+                                   total_pages=total_rondas)
+        
+        return render_template('fixtures.html', 
+                               ronda_actual=ronda_actual,
+                               id_torneo=id_torneo,
+                               current_page=page,
+                               total_pages=total_rondas)
+    
     except ValueError:
         return jsonify({'error': 'Error al procesar los datos del torneo'}), 400
     except Exception as e:
         return jsonify({'error': f'Error inesperado: {str(e)}'}), 500
 
-    
+
 #Fin ruta Fixtures
 
 #Inicio ruta view-torneo
@@ -385,33 +392,35 @@ def deleteTorneo():
 #Fin ruta delete-torneo
 
 #Inicio ruta paridos
-@app_routes.route('/partidos', methods=['POST'])
-def guardar_partidos():
+@app_routes.route('/guardar_partidos', methods=['POST'])
+def save_partidos():
+    data = request.get_json()
+    print("Datos recibidos:", data)
+
     try:
-        data = request.get_json()  # Recibe el JSON desde el frontend
+        id_torneo = data.get('idTorneo')
         partidos = data.get('partidos', [])
+        print(partidos)
+        # Validaciones
+        if not id_torneo or not partidos:
+            return jsonify({'error': 'Datos del torneo o partidos incompletos'}), 400
 
-        if not partidos:
-            return jsonify({'error': 'No se recibieron datos de partidos'}), 400
-
-        # Procesar y guardar cada partido
+        # Guardar cada partido
         for partido in partidos:
-            id_local = partido.get('id_local')
-            id_visitante = partido.get('id_visitante')
-            fecha = partido.get('fecha')
-            hora = partido.get('hora')
-            ubicacion = partido.get('ubicacion')
-            arbitro = partido.get('arbitro')
+            save_match(
+                id_torneo=id_torneo,
+                id_equipo_local=partido['idLocal'],
+                id_equipo_visitante=partido['idVisitante'],
+                fecha=partido['fecha'],
+                hora=partido['hora'],
+                #ubicacion=partido.get('ubicacion', ''),
+                #arbitro=partido.get('arbitro', '')
+            )
 
-            # Lógica para guardar en la base de datos
-            guardar_partido(id_local, id_visitante, fecha, hora, ubicacion, arbitro)
-
-        return jsonify({'message': 'Partidos guardados correctamente'}), 200
+        return jsonify({'mensaje': 'Partidos guardados exitosamente'}), 200
 
     except Exception as e:
-        return jsonify({'error': f'Error inesperado: {str(e)}'}), 500
-
-    
+        return jsonify({'error': f'Error al guardar los partidos: {str(e)}'}), 500
 
 #Fin ruta paridos
 
@@ -436,3 +445,10 @@ def verEquipo():
 
 #Eliminar jugadores
 
+#Registrar ubicaciones y arbitro.
+@app_routes.route('/arb-ubi/<int:id_torneo>',methods=['GET'])
+def add_arbubi(id_torneo):
+
+    if not id_torneo:
+        return "ID del torneo no proporcionado", 400
+    return render_template('registroUbiArb.html', id_torneo=id_torneo)

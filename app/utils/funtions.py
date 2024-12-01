@@ -39,11 +39,17 @@ def generar_fixtures(equipos):
         partidos = []
 
         for i in range(partidos_por_ronda):
-            equipo_local = equipos[i]["nombre"]
-            equipo_visitante = equipos[len(equipos) - 1 - i]["nombre"]
-            partidos.append({"local": equipo_local, "visitante": equipo_visitante})
+            equipo_local = equipos[i]
+            equipo_visitante = equipos[len(equipos) - 1 - i]
+            partidos.append({
+                "local": equipo_local["nombre"],
+                "id_local": equipo_local.get("id_equipo"),
+                "visitante": equipo_visitante["nombre"],
+                "id_visitante": equipo_visitante.get("id_equipo")
+            })
 
         fixtures.append({"ronda": ronda + 1, "partidos": partidos})
+        
 
         # Rotar los equipos (excepto el primero que permanece fijo)
         ultimo = equipos.pop()

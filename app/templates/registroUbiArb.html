@@ -1,0 +1,28 @@
+{% extends 'layout.html' %} {% block content %}
+
+<div class="row">
+  <div class="col">
+    <h3>Ubicaciones</h3>
+    <form id="formUbicaciones">
+      <label for="">Lugar</label>
+      <input type="text" class="form-control" id="lugar" />
+      <label for="">Cancha</label>
+      <input type="text" class="form-control" id="cancha" />
+      <button type="submit" class="btn btn-warning">Enviar</button>
+    </form>
+  </div>
+  <div class="col">
+    <h3>Arbitros</h3>
+    <form id="formArbitros">
+      <label for="">Identificacion</label>
+      <input type="number" class="form-control" id="id_arbitro" />
+      <label for="">Nombre</label>
+      <input type="text" class="form-control" id="nombre" />
+      <label for="">Experiencia</label>
+      <input type="text" class="form-control" id="experiencia" />
+      <button type="submit" class="btn btn-warning">Enviar</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

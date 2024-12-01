@@ -215,3 +215,23 @@ def get_jugadores(id_equipo):
     finally:
         cursor.close()
         conexion.close()
+        
+#Funcion guardar partidos
+
+def save_match(id_torneo, id_equipo_local, id_equipo_visitante, fecha, hora ):
+    conexion = get_connection()
+    cursor = conexion.cursor()
+
+    # Crear la consulta SQL para insertar los datos
+    query = """
+        INSERT INTO partidos (id_torneo, id_equipo_local, id_equipo_visitante, fecha, hora)
+        VALUES (%s, %s, %s, %s, %s )
+    """
+
+    # Ejecutar la consulta con los valores proporcionados
+    cursor.execute(query, (id_torneo, id_equipo_local, id_equipo_visitante,  fecha, hora ))
+
+    # Confirmar los cambios y cerrar la conexión
+    conexion.commit()
+    cursor.close()
+    conexion.close()
