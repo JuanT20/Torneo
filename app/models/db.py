@@ -10,7 +10,6 @@ def get_connection():
         host='127.0.0.1',
         user='root',
         password='',
-        #database='kickoff',
         database='torneo',
         port=3306
         )
@@ -217,25 +216,46 @@ def get_jugadores(id_equipo):
         conexion.close()
         
 #Funcion guardar partidos
-
-def save_match(id_torneo, id_equipo_local, id_equipo_visitante, fecha, hora,ubicacion,id_arbitro ):
+def save_matches(id_torneo, partidos):
     conexion = get_connection()
     cursor = conexion.cursor()
 
-    # Crear la consulta SQL para insertar los datos
+    # consulta SQL para insertar los datos
     query = """
-        INSERT INTO partidos (id_torneo, id_equipo_local, id_equipo_visitante, id_arbitro,fecha, hora,id_ubicacion)
-        VALUES (%s, %s, %s, %s, %s, %s, %s )
+        INSERT INTO partidos (id_torneo, id_equipo_local, id_equipo_visitante, id_arbitro, fecha, hora, id_ubicacion)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
     """
 
-    # Ejecutar la consulta con los valores proporcionados
-    cursor.execute(query, (id_torneo, id_equipo_local, id_equipo_visitante,  fecha, hora,ubicacion,id_arbitro ))
+    # lista de valores a insertar
+    values = [
+        (
+            id_torneo,
+            partido['idLocal'],
+            partido['idVisitante'],
+            partido['arbitro'],
+            partido['fecha'],
+            partido['hora'],
+            partido['ubicacion']
+        )
+        for partido in partidos
+    ]
 
-    # Confirmar los cambios y cerrar la conexión
-    conexion.commit()
-    cursor.close()
-    conexion.close()
-    
+    try:
+        # Ejecutar múltiples inserciones
+        cursor.executemany(query, values)
+
+        # Confirmar los cambios
+        conexion.commit()
+    except Exception as e:
+        # En caso de error, deshacer los cambios
+        conexion.rollback()
+        print(f"Error al guardar partidos: {e}")
+        raise
+    finally:
+        # Cerrar la conexión
+        cursor.close()
+        conexion.close()
+
     
     
 #Guardar las ubicaciones
@@ -243,7 +263,7 @@ def save_ubicacion(id_torneo,lugar,cancha):
     conexion = get_connection()
     cursor = conexion.cursor()
     
-    # Crear la consulta SQL para insertar los datos
+    # consulta SQL para insertar los datos
     query = """
         INSERT INTO ubicaciones (lugar,cancha,id_torneo)
         VALUES (%s, %s, %s)
@@ -262,7 +282,7 @@ def save_arbitro(id_arbitro,nombre,experiencia,id_torneo):
     conexion = get_connection()
     cursor = conexion.cursor()
     
-    # Crear la consulta SQL para insertar los datos
+    # consulta SQL para insertar los datos
     query = """
         INSERT INTO arbitros (id_arbitro,nombre,experiencia,id_torneo)
         VALUES (%s, %s, %s, %s)
@@ -277,21 +297,18 @@ def save_arbitro(id_arbitro,nombre,experiencia,id_torneo):
 
     
 #Obtener las ubicaciones
-
 def get_ubicaciones(id_torneo):
     conexion = get_connection()
     cursor = conexion.cursor(dictionary=True)
     try:
-        query = "SELECT id_ubicacion,lugar, cancha FROM ubicaciones WHERE id_torneo = %s"
+        query = "SELECT id_ubicacion, lugar, cancha FROM ubicaciones WHERE id_torneo = %s"
         cursor.execute(query,(id_torneo,))
         return cursor.fetchall()
     finally:
         cursor.close()
         conexion.close()
-        
-            
-#Obtener los arbitros
 
+#Obtener los arbitros
 def get_arbitros(id_torneo):
     conexion = get_connection()
     cursor = conexion.cursor(dictionary=True)
@@ -303,3 +320,31 @@ def get_arbitros(id_torneo):
         cursor.close()
         conexion.close()
         
+#Obtener los partidos
+def get_partidos(id_torneo):
+    conexion = get_connection()
+    cursor = conexion.cursor(dictionary=True)
+    try:
+        query = """ SELECT 
+                        p.id_partido, 
+                        p.id_torneo, 
+                        el.nombre AS equipo_local, 
+                        ev.nombre AS equipo_visitante, 
+                        p.fecha,
+                        p.hora,
+                        a.nombre AS arbitro, 
+                        u.lugar, 
+                        u.cancha 
+                    FROM partidos p
+                    JOIN arbitros a ON p.id_arbitro = a.id_arbitro
+                    JOIN ubicaciones u ON p.id_ubicacion = u.id_ubicacion
+                    JOIN equipos el ON p.id_equipo_local = el.id_equipo
+                    JOIN equipos ev ON p.id_equipo_visitante = ev.id_equipo
+                    WHERE p.id_torneo = %s
+
+                """
+        cursor.execute(query,(id_torneo,))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conexion.close()
