@@ -18,7 +18,7 @@ def landing():
         return render_template('index.html', rol=rol, correo=correo)
 
     # Renderizar la página principal para usuarios no logueados o roles diferentes
-    return render_template('index.html', rol=None)
+    return render_template('index.html')
 
 
 # Fin Ruta principal: Landing Page
@@ -304,10 +304,10 @@ def addJugadores():
         
 #Fin Ruta register-jugadores
 
-#Inicio ruta Fixtures
+# #Inicio ruta Fixtures
 @app_routes.route('/fixtures/<int:id_torneo>', methods=['GET'])
 def fixtures(id_torneo):
-    page = request.args.get('page', 1, type=int)  # Página actual (por defecto 1)
+    
 
     if not id_torneo:
         return jsonify({'error': 'ID del torneo no proporcionado'}), 400
@@ -321,47 +321,24 @@ def fixtures(id_torneo):
         # Generar los fixtures
         fixtures = generar_fixtures(equipos)  # Lista completa de rondas con partidos
         
-        # Total de rondas
-        total_rondas = len(fixtures)
+        
+     
 
-        # Verifica si la página es válida
-        if page < 1 or page > total_rondas:
-            return jsonify({'error': 'Página fuera de rango'}), 404
-
-        # Obtiene solo la ronda correspondiente a la página actual
-        ronda_actual = fixtures[page - 1]
         
         # Consulta las ubicaciones y árbitros
         ubicaciones = get_ubicaciones(id_torneo)
         arbitros = get_arbitros(id_torneo)
 
-        # Añadir soporte para solicitudes AJAX
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return render_template('fixtures_content.html', 
-                                   ronda_actual=ronda_actual,
-                                   id_torneo=id_torneo,
-                                   current_page=page,
-                                   total_pages=total_rondas,
-                                   equipos=equipos,  
-                                   ubicaciones=ubicaciones,  
-                                   arbitros=arbitros)  
+       
         
-        return render_template('fixtures.html', 
-                               ronda_actual=ronda_actual,
-                               id_torneo=id_torneo,
-                               current_page=page,
-                               total_pages=total_rondas,
-                               equipos=equipos,  
-                               ubicaciones=ubicaciones,  
-                               arbitros=arbitros)
+        return render_template('fixtures.html', id_torneo=id_torneo,equipos=equipos, fixtures=fixtures,  ubicaciones=ubicaciones,  arbitros=arbitros)
     
     except ValueError:
         return jsonify({'error': 'Error al procesar los datos del torneo'}), 400
     except Exception as e:
         return jsonify({'error': f'Error inesperado: {str(e)}'}), 500
 
-
-#Fin ruta Fixtures
+# #Fin ruta Fixtures
 
 #Inicio ruta view-torneo
 

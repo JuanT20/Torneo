@@ -167,9 +167,9 @@ def get_teams(id_torneo):
         cursor.execute(query, (id_torneo,))
         equipos = cursor.fetchall()
         
-        # Reemplazar barras invertidas en la ruta de la imagen
-        for equipo in equipos:
-            equipo['escudo'] = equipo['escudo'].replace("\\", "/")
+        # # Reemplazar barras invertidas en la ruta de la imagen
+        # for equipo in equipos:
+        #     equipo['escudo'] = equipo['escudo'].replace("\\", "/")
         
         return equipos
     finally:

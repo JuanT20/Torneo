@@ -114,3 +114,39 @@ footer {
 .input-table {
   width: 200px;
 }
+
+.formPartidos {
+  max-height: 400px; /* Define la altura máxima para el scroll */
+  overflow-y: auto; /* Activa el scroll vertical */
+  border: 1px solid #ccc; /* Opcional: Añade un borde para visualizar el área */
+  padding: 10px; /* Opcional: Espaciado interno */
+  margin-bottom: 20px; /* Espaciado entre formularios */
+  background-color: #f9f9f9; /* Fondo claro opcional */
+}
+
+/*Estilos cards de la ruta view-torneo*/
+.cardViewTorneo {
+  background-color: var(--colorQuinario);
+  width: 240px;
+  height: 254px;
+  transition: 0.5s;
+  cursor: pointer;
+}
+
+.cardViewTorneo:hover {
+  transform: translateY(-20px);
+}
+
+/*Estilos cards de la ruta arb-ubi*/
+.cardR-U-A {
+  background-color: var(--colorQuinario);
+  width: 300px;
+  height: 300px;
+  transition: 0.5s;
+  cursor: pointer;
+  margin-left: 100px;
+}
+
+.cardR-U-A:hover {
+  transform: translateY(-20px);
+}

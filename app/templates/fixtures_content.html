@@ -1,6 +1,7 @@
-{% if ronda_actual %}
-<h3>Fecha {{ ronda_actual.ronda }}</h3>
-<form id="formPartidos">
+{% if fixtures %} {%for ronda in fixtures %}
+
+<form class="formPartidos" id="formPartidos">
+  <h3 class="text-dark">Fecha {{ ronda.ronda }}</h3>
   <input type="hidden" id="idTorneo" value="{{ id_torneo }}" />
 
   <table class="table table-striped table-bordered">
@@ -15,7 +16,7 @@
       </tr>
     </thead>
     <tbody>
-      {% for partido in ronda_actual.partidos %}
+      {% for partido in ronda.partidos %}
       <tr>
         <td>
           {{ partido.local }}
@@ -70,45 +71,9 @@
       {% endfor %}
     </tbody>
   </table>
-
+  {% endfor %}
   <button class="btn btn-warning mx-2" type="submit">Guardar Cambios</button>
 </form>
-
-<!-- Controles de paginación -->
-<div class="pagination-container text-center mt-4">
-  {% if total_pages > 1 %}
-  <nav>
-    <ul class="pagination justify-content-center">
-      {% if current_page > 1 %}
-      <li class="page-item">
-        <a
-          class="page-link"
-          href="?id_torneo={{ id_torneo }}&page={{ current_page - 1 }}"
-          >Anterior</a
-        >
-      </li>
-      {% endif %}
-
-      <li class="page-item active">
-        <span class="page-link">{{ current_page }}</span>
-      </li>
-
-      {% if current_page < total_pages %}
-      <li class="page-item">
-        <div class="d-flex">
-          <a
-            class="page-link"
-            href="?id_torneo={{ id_torneo }}&page={{ current_page + 1 }}"
-            >Siguiente</a
-          >
-        </div>
-      </li>
-      {% endif %}
-    </ul>
-  </nav>
-  {% endif %}
-</div>
-
 {% else %}
 <p class="text-center text-warning">
   No hay fixtures disponibles para este torneo.

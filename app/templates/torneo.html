@@ -1,10 +1,10 @@
 {% extends 'layout.html' %} {% block content %}
 <div class="showTorneo ">
    
-  <h1 class="text-center">Torneo</h1>
+  <h1 class="text-center mb-5">Torneo</h1>
   <div class="row text-center ">
     <di class="col">
-        <div class="card">
+        <div class="card cardViewTorneo">
             <div class="card-body">
               <h4 class="card-title">Equipos</h4>
               <a href="/equipos/{{id_torneo}}" class="btn btn-warning my-3">Ver</a>
@@ -12,7 +12,7 @@
         </div>
     </di>
     <di class="col">
-        <div class="card">
+        <div class="card cardViewTorneo">
             <div class="card-body">
               <h4 class="card-title">Partidos</h4>
               <a href="/partidos/{{id_torneo}}" class="btn btn-warning my-3">Ver</a>
@@ -20,7 +20,7 @@
         </div>
     </di>
     <di class="col">
-        <div class="card">
+        <div class="card cardViewTorneo">
             <div class="card-body">
               <h4 class="card-title">Estadisticas</h4>
               <a href="" class="btn btn-warning my-3">Ver</a>
@@ -28,10 +28,11 @@
           </div>
     </di>
     <di class="col">
-        <div class="card">
+        <div class="card cardViewTorneo">
             <div class="card-body">
-              <h4 class="card-title">Registrar</h4>
-              <p>Registra tus ubicaciones y arbitros</p>
+              <h4 class="card-title">Ubicaciones</h4>
+              <h4 class="card-title">Arbitros</h4>
+              <p>Registrar</p>
               <a href="/arb-ubi/{{id_torneo}}" class="btn btn-warning my-3">Ver</a>
             </div>
           </div>
@@ -42,7 +43,7 @@
  
   <a href="/dashboard" class="btn btn-warning mx-2 my-5" type="button">
     <i class="bi bi-arrow-left"></i>
-    Back
+    Atras
   </a>
   </div>
   
