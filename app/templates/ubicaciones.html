@@ -1,0 +1,29 @@
+{% extends 'layout.html' %} {% block content %}
+<div class="row">
+  <div class="col">
+    <a
+      href="/arb-ubi/{{id_torneo}}"
+      class="btn btn-warning mx-2 my-5"
+      type="button"
+    >
+      <i class="bi bi-arrow-left"></i>
+      Atras
+    </a>
+  </div>
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <h3>Ubicaciones</h3>
+        <form id="formUbicaciones" data-id="{{id_torneo}}">
+          <label for="" class="my-2">Lugar</label>
+          <input type="text" class="form-control my-2" id="lugar" />
+          <label for="" class="my-2">Cancha</label>
+          <input type="text" class="form-control my-2" id="cancha" />
+          <button type="submit" class="btn btn-warning my-2">Enviar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col"></div>
+</div>
+{% endblock %}

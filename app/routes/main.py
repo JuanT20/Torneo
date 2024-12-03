@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for,session,current_app
 from utils.funtions import allowed_file,save_logo,generar_fixtures
-from models.db import insertar_torneo,verificar_usuario,insertar_usuario,save_team_to_db,get_teams,insertar_jugadores,get_tournaments,get_user_role,get_numero_equipos,get_jugadores
+from models.db import insertar_torneo,verificar_usuario,insertar_usuario,save_team_to_db,get_teams,insertar_jugadores,get_tournaments,get_user_role,get_numero_equipos,get_jugadores,save_matches,save_ubicacion,save_arbitro,get_ubicaciones,get_arbitros,get_partidos,delete_tournament,delete_team
 import os
 
 
@@ -18,7 +18,7 @@ def landing():
         return render_template('index.html', rol=rol, correo=correo)
 
     # Renderizar la página principal para usuarios no logueados o roles diferentes
-    return render_template('index.html', rol=None)
+    return render_template('index.html')
 
 
 # Fin Ruta principal: Landing Page
@@ -246,7 +246,20 @@ def addEquipos(id_torneo):
             return jsonify({'error': str(e)}), 500
 
 #Fin Ruta register-equipos
-    
+
+#Eliminar equipo si hay mas de 6.
+
+@app_routes.route('/eliminar-equipo/<int:id_torneo>/<int:id_equipo>', methods=['GET'])
+def eliminar_equipo(id_torneo, id_equipo):
+    try:
+        # Llamar a la función para eliminar el equipo
+        if delete_team(id_torneo, id_equipo):
+            return jsonify({'success': True, 'message': 'Equipo eliminado correctamente'}), 200
+        else:
+            return jsonify({'success': False, 'message': 'No se puede eliminar el equipo. El torneo debe tener más de 6 equipos.'}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
         
 # Inicio Ruta equipos
 @app_routes.route('/equipos/<int:id_torneo>', methods=['GET'])
@@ -304,53 +317,41 @@ def addJugadores():
         
 #Fin Ruta register-jugadores
 
-#Inicio ruta Fixtures
-
-@app_routes.route('/fixtures', methods=['GET'])
-def fixtures():
-    id_torneo = request.args.get('id_torneo')
-    page = request.args.get('page', 1, type=int)  # Página actual (por defecto 1)
+# #Inicio ruta Fixtures
+@app_routes.route('/fixtures/<int:id_torneo>', methods=['GET'])
+def fixtures(id_torneo):
+    
 
     if not id_torneo:
         return jsonify({'error': 'ID del torneo no proporcionado'}), 400
 
-    if not id_torneo.isdigit():
-        return jsonify({'error': 'ID del torneo debe ser un número'}), 400
-
     try:
-        id_torneo = int(id_torneo)
         equipos = get_teams(id_torneo)  # Obtener equipos del torneo desde la base de datos
-
+        
         if not equipos:
             return jsonify({'error': 'No hay equipos registrados para este torneo'}), 404
 
         # Generar los fixtures
         fixtures = generar_fixtures(equipos)  # Lista completa de rondas con partidos
+        
+        
+     
 
-        # Total de rondas
-        total_rondas = len(fixtures)
+        
+        # Consulta las ubicaciones y árbitros
+        ubicaciones = get_ubicaciones(id_torneo)
+        arbitros = get_arbitros(id_torneo)
 
-        # Verifica si la página es válida
-        if page < 1 or page > total_rondas:
-            return jsonify({'error': 'Página fuera de rango'}), 404
-
-        # Obtiene solo la ronda correspondiente a la página actual
-        ronda_actual = fixtures[page - 1]
-
-        return render_template(
-            'fixtures.html',
-            ronda_actual=ronda_actual,
-            id_torneo=id_torneo,
-            current_page=page,
-            total_pages=total_rondas
-        )
+       
+        
+        return render_template('fixtures.html', id_torneo=id_torneo,equipos=equipos, fixtures=fixtures,  ubicaciones=ubicaciones,  arbitros=arbitros)
+    
     except ValueError:
         return jsonify({'error': 'Error al procesar los datos del torneo'}), 400
     except Exception as e:
         return jsonify({'error': f'Error inesperado: {str(e)}'}), 500
 
-    
-#Fin ruta Fixtures
+# #Fin ruta Fixtures
 
 #Inicio ruta view-torneo
 
@@ -377,22 +378,43 @@ def editTorneo():
 #Fin ruta edit-torneo
 
 #Inicio ruta delete-torneo
-@app_routes.route('/delete-torneo', methods=['GET','POST'])
-def deleteTorneo():
-    
-    
-    return render_template('')
+@app_routes.route('/delete-torneo/<int:id_torneo>', methods=['GET'])
+def deleteTorneo(id_torneo):
+    try:
+        # Eliminar el torneo usando el id_torneo
+        delete_tournament(id_torneo)
+        return redirect(url_for('app_routes.dashboard'))
+    except Exception as e:
+        print(f"Error al eliminar el torneo: {str(e)}")
+        return jsonify({'error': f'Error inesperado: {str(e)}'}), 500
+
 #Fin ruta delete-torneo
 
 #Inicio ruta paridos
-# @app_routes.routes('/partidos',methods=['GET','POST'])
-# def partidos():
+@app_routes.route('/guardar_partidos', methods=['POST'])
+def guardar_partidos():
+    try:
+        # Obtener datos del JSON
+        data = request.json
+        print(data)
 
-    # if request.method == 'GET':
-            
+        id_torneo = data.get('idTorneo')
+        partidos = data.get('partidos')
 
-    # if request.method == 'POST':
-    
+        # Validar que los datos sean correctos
+        if not id_torneo or not partidos:
+            return jsonify({'error': 'Datos incompletos'}), 400
+
+        # Guardar todos los partidos en la base de datos
+        save_matches(id_torneo, partidos)
+
+        return jsonify({'mensaje': 'Partidos guardados exitosamente'}), 200
+
+    except Exception as e:
+        print(f"Error al guardar partidos: {str(e)}")
+        return jsonify({'error': f'Error inesperado: {str(e)}'}), 500
+
+
 
 #Fin ruta paridos
 
@@ -415,5 +437,92 @@ def verEquipo():
 
 #Fin Ruta verEquipos
 
-#Eliminar jugadores
 
+
+#Inicio ruta ubicaciones 
+@app_routes.route('/ubicacion/<int:id_torneo>',methods=['GET','POST'])
+def ubicacion(id_torneo):
+    if request.method == 'GET':
+        
+        if not id_torneo:
+            return "ID del torneo no proporcionado", 400
+    
+    
+        return render_template('ubicaciones.html', id_torneo=id_torneo)
+    
+    
+    if request.method == 'POST':
+        data = request.get_json()  # Recibir datos en formato JSON
+        print(data)
+        if not data:
+            return jsonify({'success': False,'error': 'No se recibieron datos'}), 400
+        
+        lugar = data.get('lugar')
+        cancha = data.get('cancha')
+        id_torneo = data.get('id_torneo')
+
+        if not lugar or not cancha:
+            return jsonify({'error': 'Los datos de ubicación y cancha son obligatorios'}), 400
+        
+        save_ubicacion(id_torneo, lugar, cancha)
+        
+        return jsonify({'success':True,'mensaje': 'Ubicación guardada exitosamente'}), 200
+    
+    
+#Fin ruta ubicaciones 
+ 
+#Inicio ruta Arbitro
+@app_routes.route('/arbitro/<int:id_torneo>',methods=['GET','POST'])
+def arbitro(id_torneo):
+    if request.method == 'GET':
+        if not id_torneo:
+            return "ID del torneo no proporcionado", 400
+        
+        return render_template('arbitros.html', id_torneo=id_torneo)
+    
+    if request.method == 'POST':
+        data = request.get_json()  # Recibir datos en formato JSON
+        print(data)
+        if not data:
+            return jsonify({'success': False,'error': 'No se recibieron datos'}), 400
+        
+        id_arbitro = data.get('identificacion')
+        nombre = data.get('nombre')
+        experiencia = data.get('experiencia')
+        id_torneo = data.get('id_torneo')
+
+        if not id_arbitro or not nombre or not experiencia:
+            return jsonify({'error': 'Los datos de identificación, nombre y experiencia son obligatorios'}), 400
+
+        save_arbitro(id_arbitro, nombre, experiencia, id_torneo)
+            
+        return jsonify({'success':True,'mensaje': 'Árbitro guardado exitosamente'}), 200
+    
+#Fin ruta Arbitro
+
+#Inicio ruta arb-ubi, registro de ubicacion y arbitro.
+@app_routes.route('/arb-ubi/<int:id_torneo>', methods=['GET', 'POST'])
+def add_ubicacion_arbitro(id_torneo):
+    if request.method == 'GET':
+        # Renderizar el formulario con el ID del torneo
+        if not id_torneo:
+            return "ID del torneo no proporcionado", 400
+        
+        return render_template('registroUbiArb.html', id_torneo=id_torneo)
+    
+#Fin ruta arb-ubi, registro de ubicacion y arbitro. 
+
+#Inicio ruta partidos
+@app_routes.route('/partidos/<int:id_torneo>', methods=['GET', 'POST'])
+def partidos(id_torneo):
+    if request.method == 'GET':
+        # Renderizar el formulario con el ID del torneo
+        if not id_torneo:
+            return "ID del torneo no proporcionado", 400
+        
+        partidos = get_partidos(id_torneo)
+        
+        
+        return render_template('tablaPartidos.html', id_torneo=id_torneo, partidos=partidos)
+ 
+ #Fin ruta partidos   

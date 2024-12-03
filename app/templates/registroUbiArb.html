@@ -1,0 +1,40 @@
+{% extends 'layout.html' %} {% block content %}
+
+<div class="row">
+  <div class="col">
+    <div class="card cardR-U-A mt-5">
+      <div class="card-body">
+        <h4 class="card-title">Registra las ubicaciones del torneo</h4>
+        <a
+          href="/ubicacion/{{id_torneo}}"
+          class="btn btn-warning text-center my-5 mx-sm-5"
+          >Ir</a
+        >
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card cardR-U-A mt-5">
+      <div class="card-body">
+        <h4 class="card-title">Registra los arbitros del torneo</h4>
+        <a
+          href="/arbitro/{{id_torneo}}"
+          class="btn btn-warning text-center my-5 mx-sm-5"
+          >Ir</a
+        >
+      </div>
+    </div>
+  </div>
+  <div>
+    <a
+      href="/view-torneo/{{id_torneo}}"
+      class="btn btn-warning mx-2 my-5"
+      type="button"
+    >
+      <i class="bi bi-arrow-left"></i>
+      Atras
+    </a>
+  </div>
+</div>
+
+{% endblock %}

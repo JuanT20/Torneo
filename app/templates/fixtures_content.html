@@ -1,0 +1,81 @@
+{% if fixtures %} {%for ronda in fixtures %}
+
+<form class="formPartidos" id="formPartidos">
+  <h3 class="text-dark">Fecha {{ ronda.ronda }}</h3>
+  <input type="hidden" id="idTorneo" value="{{ id_torneo }}" />
+
+  <table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Equipo Local</th>
+        <th scope="col">Equipo Visitante</th>
+        <th scope="col">Fecha</th>
+        <th scope="col">Hora</th>
+        <th scope="col">Ubicación</th>
+        <th scope="col">Árbitros</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for partido in ronda.partidos %}
+      <tr>
+        <td>
+          {{ partido.local }}
+
+          <input type="hidden" id="idLocal" value="{{ partido.id_local }}" />
+        </td>
+        <td>
+          {{ partido.visitante }}
+          <input
+            type="hidden"
+            id="idVisitante"
+            value="{{ partido.id_visitante }}"
+          />
+        </td>
+        <td>
+          <input
+            class="form-control input-table"
+            type="date"
+            id="fecha"
+            required
+          />
+        </td>
+        <td>
+          <input
+            class="form-control input-table"
+            type="time"
+            id="hora"
+            required
+          />
+        </td>
+        <td>
+          <select class="form-control input-table" id="ubicacion">
+            <option value="">Seleccione</option>
+            {% for ubicacion in ubicaciones %}
+            <option value="{{ ubicacion.id_ubicacion }}">
+              {{ ubicacion.lugar }} - {{ ubicacion.cancha }}
+            </option>
+            {% endfor %}
+          </select>
+        </td>
+        <td>
+          <select class="form-control input-table" id="arbitro">
+            <option value="">Seleccione</option>
+            {% for arbitro in arbitros %}
+            <option value="{{ arbitro.id_arbitro }}">
+              {{ arbitro.nombre }}
+            </option>
+            {% endfor %}
+          </select>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endfor %}
+  <button class="btn btn-warning mx-2" type="submit">Guardar Cambios</button>
+</form>
+{% else %}
+<p class="text-center text-warning">
+  No hay fixtures disponibles para este torneo.
+</p>
+{% endif %}

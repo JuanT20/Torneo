@@ -10,7 +10,6 @@ def get_connection():
         host='127.0.0.1',
         user='root',
         password='',
-        #database='kickoff',
         database='torneo',
         port=3306
         )
@@ -101,6 +100,29 @@ def insertar_torneo(id_usuario, nombreTorneo, tipoTorneo, formatoTorneo, numeroE
     return id_torneo  # Devolvemos el ID del torneo creado
 
 
+#Eliminar torneo
+
+def delete_tournament(id_torneo):
+    conexion = get_connection()
+    cursor = conexion.cursor()
+
+    try:
+        # Eliminar equipos del torneo
+        query_torneo_equipo = "DELETE FROM torneo_equipos WHERE id_torneo = %s"
+        cursor.execute(query_torneo_equipo, (id_torneo,))
+        conexion.commit()
+        
+        # Eliminar torneo
+        query_torneo = "DELETE FROM torneos WHERE id_torneo = %s"
+        cursor.execute(query_torneo, (id_torneo,))
+        conexion.commit()
+        
+    finally:
+        cursor.close()
+        conexion.close()
+        
+
+
 def save_team_to_db(team_name, logo_path, id_torneo):
     conexion = get_connection()
     cursor = conexion.cursor()
@@ -164,13 +186,14 @@ def get_teams(id_torneo):
             FROM equipos e 
             JOIN torneo_equipos t_e ON e.id_equipo = t_e.id_equipo 
             WHERE t_e.id_torneo = %s
+            ORDER BY e.nombre ASC
         """
         cursor.execute(query, (id_torneo,))
         equipos = cursor.fetchall()
         
-        # Reemplazar barras invertidas en la ruta de la imagen
-        for equipo in equipos:
-            equipo['escudo'] = equipo['escudo'].replace("\\", "/")
+        # # Reemplazar barras invertidas en la ruta de la imagen
+        # for equipo in equipos:
+        #     equipo['escudo'] = equipo['escudo'].replace("\\", "/")
         
         return equipos
     finally:
@@ -215,3 +238,158 @@ def get_jugadores(id_equipo):
     finally:
         cursor.close()
         conexion.close()
+        
+#Funcion guardar partidos
+def save_matches(id_torneo, partidos):
+    conexion = get_connection()
+    cursor = conexion.cursor()
+
+    # consulta SQL para insertar los datos
+    query = """
+        INSERT INTO partidos (id_torneo, id_equipo_local, id_equipo_visitante, id_arbitro, fecha, hora, id_ubicacion)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+    """
+
+    # lista de valores a insertar
+    values = [
+        (
+            id_torneo,
+            partido['idLocal'],
+            partido['idVisitante'],
+            partido['arbitro'],
+            partido['fecha'],
+            partido['hora'],
+            partido['ubicacion']
+        )
+        for partido in partidos
+    ]
+
+    try:
+        # Ejecutar múltiples inserciones
+        cursor.executemany(query, values)
+
+        # Confirmar los cambios
+        conexion.commit()
+    except Exception as e:
+        # En caso de error, deshacer los cambios
+        conexion.rollback()
+        print(f"Error al guardar partidos: {e}")
+        raise
+    finally:
+        # Cerrar la conexión
+        cursor.close()
+        conexion.close()
+
+    
+    
+#Guardar las ubicaciones
+def save_ubicacion(id_torneo,lugar,cancha):
+    conexion = get_connection()
+    cursor = conexion.cursor()
+    
+    # consulta SQL para insertar los datos
+    query = """
+        INSERT INTO ubicaciones (lugar,cancha,id_torneo)
+        VALUES (%s, %s, %s)
+    """
+    # Ejecutar la consulta con los valores proporcionados
+    cursor.execute(query, (lugar,cancha,id_torneo,))
+    # Confirmar los cambios y cerrar la conexión
+    conexion.commit()
+    cursor.close()
+    conexion.close()
+
+
+
+#Guardar los arbitros
+def save_arbitro(id_arbitro,nombre,experiencia,id_torneo):
+    conexion = get_connection()
+    cursor = conexion.cursor()
+    
+    # consulta SQL para insertar los datos
+    query = """
+        INSERT INTO arbitros (id_arbitro,nombre,experiencia,id_torneo)
+        VALUES (%s, %s, %s, %s)
+    """
+    # Ejecutar la consulta con los valores proporcionados
+    cursor.execute(query, (id_arbitro,nombre,experiencia,id_torneo))
+    # Confirmar los cambios y cerrar la conexión
+    conexion.commit()
+    cursor.close()
+    conexion.close()
+
+
+    
+#Obtener las ubicaciones
+def get_ubicaciones(id_torneo):
+    conexion = get_connection()
+    cursor = conexion.cursor(dictionary=True)
+    try:
+        query = "SELECT id_ubicacion, lugar, cancha FROM ubicaciones WHERE id_torneo = %s"
+        cursor.execute(query,(id_torneo,))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conexion.close()
+
+#Obtener los arbitros
+def get_arbitros(id_torneo):
+    conexion = get_connection()
+    cursor = conexion.cursor(dictionary=True)
+    try:
+        query = "SELECT id_arbitro, nombre, experiencia FROM arbitros WHERE id_torneo = %s"
+        cursor.execute(query,(id_torneo,))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conexion.close()
+        
+#Obtener los partidos
+def get_partidos(id_torneo):
+    conexion = get_connection()
+    cursor = conexion.cursor(dictionary=True)
+    try:
+        query = """ SELECT 
+                        p.id_partido, 
+                        p.id_torneo, 
+                        el.nombre AS equipo_local, 
+                        ev.nombre AS equipo_visitante, 
+                        p.fecha,
+                        p.hora,
+                        a.nombre AS arbitro, 
+                        u.lugar, 
+                        u.cancha 
+                    FROM partidos p
+                    JOIN arbitros a ON p.id_arbitro = a.id_arbitro
+                    JOIN ubicaciones u ON p.id_ubicacion = u.id_ubicacion
+                    JOIN equipos el ON p.id_equipo_local = el.id_equipo
+                    JOIN equipos ev ON p.id_equipo_visitante = ev.id_equipo
+                    WHERE p.id_torneo = %s
+
+                """
+        cursor.execute(query,(id_torneo,))
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conexion.close()
+        
+#Eliminar equipo si hay mas de 6 equipos en el torneo sino no.
+def delete_team(self, id_torneo, id_equipo):
+    numero_equipos = self.get_numero_equipos(id_torneo)['numero_equipos']
+    if numero_equipos > 6:
+        conexion = get_connection()
+        cursor = conexion.cursor()
+        try:
+            query = "DELETE FROM equipos WHERE id_equipo = %s"
+            cursor.execute(query, (id_equipo,))
+            conexion.commit()
+            return True
+        except Exception as e:
+            conexion.rollback()
+            print(f"Error al eliminar el equipo: {e}")
+            return False
+        finally:
+            cursor.close()
+            conexion.close()
+                
+
