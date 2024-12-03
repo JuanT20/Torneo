@@ -309,6 +309,7 @@ def addJugadores():
 @app_routes.route('/fixtures', methods=['GET'])
 def fixtures():
     id_torneo = request.args.get('id_torneo')
+    page = request.args.get('page', 1, type=int)  # Página actual (por defecto 1)
 
     if not id_torneo:
         return jsonify({'error': 'ID del torneo no proporcionado'}), 400
@@ -324,26 +325,31 @@ def fixtures():
             return jsonify({'error': 'No hay equipos registrados para este torneo'}), 404
 
         # Generar los fixtures
-        fixtures = generar_fixtures(equipos)  # Debe devolver un listado de rondas con partidos estructurados
-        # Formato esperado:
-        # [
-        #     {
-        #         "ronda": 1,
-        #         "partidos": [
-        #             {"local": "Equipo A", "visitante": "Equipo B", "fecha": "2024-11-26", "hora": "15:00", "ubicacion": "Estadio 1", "arbitros": "Árbitro 1"},
-        #             {"local": "Equipo C", "visitante": "Equipo D", "fecha": "2024-11-27", "hora": "18:00", "ubicacion": "Estadio 2", "arbitros": "Árbitro 2"}
-        #         ]
-        #     },
-        #     ...
-        # ]
+        fixtures = generar_fixtures(equipos)  # Lista completa de rondas con partidos
 
-        return render_template('fixtures.html', fixtures=fixtures, id_torneo=id_torneo)
+        # Total de rondas
+        total_rondas = len(fixtures)
+
+        # Verifica si la página es válida
+        if page < 1 or page > total_rondas:
+            return jsonify({'error': 'Página fuera de rango'}), 404
+
+        # Obtiene solo la ronda correspondiente a la página actual
+        ronda_actual = fixtures[page - 1]
+
+        return render_template(
+            'fixtures.html',
+            ronda_actual=ronda_actual,
+            id_torneo=id_torneo,
+            current_page=page,
+            total_pages=total_rondas
+        )
     except ValueError:
         return jsonify({'error': 'Error al procesar los datos del torneo'}), 400
     except Exception as e:
         return jsonify({'error': f'Error inesperado: {str(e)}'}), 500
 
-
+    
 #Fin ruta Fixtures
 
 #Inicio ruta view-torneo
