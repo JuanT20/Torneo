@@ -124,6 +124,21 @@ footer {
   background-color: #f9f9f9; /* Fondo claro opcional */
 }
 
+.formRequipos {
+  max-height: 400px; /* Define la altura máxima para el scroll */
+  overflow-y: auto; /* Activa el scroll vertical */
+  border: 1px solid #ccc; /* Opcional: Añade un borde para visualizar el área */
+  padding: 10px; /* Opcional: Espaciado interno */
+  margin-bottom: 20px; /* Espaciado entre formularios */
+  background-color: #f9f9f9; /* Fondo claro opcional */
+  color: var(--colorPrincipal);
+}
+
+.tableEquipos {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
 /*Estilos cards de la ruta view-torneo*/
 .cardViewTorneo {
   background-color: var(--colorQuinario);

@@ -100,6 +100,29 @@ def insertar_torneo(id_usuario, nombreTorneo, tipoTorneo, formatoTorneo, numeroE
     return id_torneo  # Devolvemos el ID del torneo creado
 
 
+#Eliminar torneo
+
+def delete_tournament(id_torneo):
+    conexion = get_connection()
+    cursor = conexion.cursor()
+
+    try:
+        # Eliminar equipos del torneo
+        query_torneo_equipo = "DELETE FROM torneo_equipos WHERE id_torneo = %s"
+        cursor.execute(query_torneo_equipo, (id_torneo,))
+        conexion.commit()
+        
+        # Eliminar torneo
+        query_torneo = "DELETE FROM torneos WHERE id_torneo = %s"
+        cursor.execute(query_torneo, (id_torneo,))
+        conexion.commit()
+        
+    finally:
+        cursor.close()
+        conexion.close()
+        
+
+
 def save_team_to_db(team_name, logo_path, id_torneo):
     conexion = get_connection()
     cursor = conexion.cursor()
@@ -163,6 +186,7 @@ def get_teams(id_torneo):
             FROM equipos e 
             JOIN torneo_equipos t_e ON e.id_equipo = t_e.id_equipo 
             WHERE t_e.id_torneo = %s
+            ORDER BY e.nombre ASC
         """
         cursor.execute(query, (id_torneo,))
         equipos = cursor.fetchall()
@@ -348,3 +372,24 @@ def get_partidos(id_torneo):
     finally:
         cursor.close()
         conexion.close()
+        
+#Eliminar equipo si hay mas de 6 equipos en el torneo sino no.
+def delete_team(self, id_torneo, id_equipo):
+    numero_equipos = self.get_numero_equipos(id_torneo)['numero_equipos']
+    if numero_equipos > 6:
+        conexion = get_connection()
+        cursor = conexion.cursor()
+        try:
+            query = "DELETE FROM equipos WHERE id_equipo = %s"
+            cursor.execute(query, (id_equipo,))
+            conexion.commit()
+            return True
+        except Exception as e:
+            conexion.rollback()
+            print(f"Error al eliminar el equipo: {e}")
+            return False
+        finally:
+            cursor.close()
+            conexion.close()
+                
+

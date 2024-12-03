@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for,session,current_app
 from utils.funtions import allowed_file,save_logo,generar_fixtures
-from models.db import insertar_torneo,verificar_usuario,insertar_usuario,save_team_to_db,get_teams,insertar_jugadores,get_tournaments,get_user_role,get_numero_equipos,get_jugadores,save_matches,save_ubicacion,save_arbitro,get_ubicaciones,get_arbitros,get_partidos
+from models.db import insertar_torneo,verificar_usuario,insertar_usuario,save_team_to_db,get_teams,insertar_jugadores,get_tournaments,get_user_role,get_numero_equipos,get_jugadores,save_matches,save_ubicacion,save_arbitro,get_ubicaciones,get_arbitros,get_partidos,delete_tournament,delete_team
 import os
 
 
@@ -246,7 +246,20 @@ def addEquipos(id_torneo):
             return jsonify({'error': str(e)}), 500
 
 #Fin Ruta register-equipos
-    
+
+#Eliminar equipo si hay mas de 6.
+
+@app_routes.route('/eliminar-equipo/<int:id_torneo>/<int:id_equipo>', methods=['GET'])
+def eliminar_equipo(id_torneo, id_equipo):
+    try:
+        # Llamar a la función para eliminar el equipo
+        if delete_team(id_torneo, id_equipo):
+            return jsonify({'success': True, 'message': 'Equipo eliminado correctamente'}), 200
+        else:
+            return jsonify({'success': False, 'message': 'No se puede eliminar el equipo. El torneo debe tener más de 6 equipos.'}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
         
 # Inicio Ruta equipos
 @app_routes.route('/equipos/<int:id_torneo>', methods=['GET'])
@@ -365,11 +378,16 @@ def editTorneo():
 #Fin ruta edit-torneo
 
 #Inicio ruta delete-torneo
-@app_routes.route('/delete-torneo', methods=['GET','POST'])
-def deleteTorneo():
-    
-    
-    return render_template('')
+@app_routes.route('/delete-torneo/<int:id_torneo>', methods=['GET'])
+def deleteTorneo(id_torneo):
+    try:
+        # Eliminar el torneo usando el id_torneo
+        delete_tournament(id_torneo)
+        return redirect(url_for('app_routes.dashboard'))
+    except Exception as e:
+        print(f"Error al eliminar el torneo: {str(e)}")
+        return jsonify({'error': f'Error inesperado: {str(e)}'}), 500
+
 #Fin ruta delete-torneo
 
 #Inicio ruta paridos

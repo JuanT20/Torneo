@@ -13,32 +13,34 @@
         Atras
       </a>
     </div>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Equipo Local</th>
-          <th scope="col">Equipo Visitante</th>
-          <th scope="col">Fecha</th>
-          <th scope="col">Hora</th>
-          <th scope="col">Ubicacion</th>
-          <th scope="col">Arbitro</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for partido in partidos %}
-        <tr>
-          <td>{{ loop.index }}</td>
-          <td>{{ partido.equipo_local }}</td>
-          <td>{{ partido.equipo_visitante }}</td>
-          <td>{{ partido.fecha}}</td>
-          <td>{{ partido.hora }}</td>
-          <td>{{ partido.lugar }} - {{ partido.cancha }}</td>
-          <td>{{ partido.arbitro }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <div class="table-responsive-lg tableEquipos">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Equipo Local</th>
+            <th scope="col">Equipo Visitante</th>
+            <th scope="col">Fecha</th>
+            <th scope="col">Hora</th>
+            <th scope="col">Ubicacion</th>
+            <th scope="col">Arbitro</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for partido in partidos %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ partido.equipo_local }}</td>
+            <td>{{ partido.equipo_visitante }}</td>
+            <td>{{ partido.fecha}}</td>
+            <td>{{ partido.hora }}</td>
+            <td>{{ partido.lugar }} - {{ partido.cancha }}</td>
+            <td>{{ partido.arbitro }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 {% endblock %}
