@@ -4,7 +4,8 @@
   <h1 class="text-center mb-5">Torneo</h1>
   <div class="row text-center ">
     <di class="col">
-        <div class="card cardViewTorneo">
+        <div class="card cardViewTorneo text-center">
+          <img src="{{url_for('static', filename='img/football-team.png')}}" style="width: 100px;", height="100px;" >
             <div class="card-body">
               <h4 class="card-title">Equipos</h4>
               <a href="/equipos/{{id_torneo}}" class="btn btn-warning my-3">Ver</a>
@@ -31,9 +32,15 @@
         <div class="card cardViewTorneo">
             <div class="card-body">
               <h4 class="card-title">Ubicaciones</h4>
+              <a href="/ubicacion/{{id_torneo}}" class="btn btn-warning my-3">Registrar</a>
+            </div>
+          </div>
+    </di>
+    <di class="col">
+        <div class="card cardViewTorneo">
+            <div class="card-body">
               <h4 class="card-title">Arbitros</h4>
-              <p>Registrar</p>
-              <a href="/arb-ubi/{{id_torneo}}" class="btn btn-warning my-3">Ver</a>
+              <a href="/arbitro/{{id_torneo}}" class="btn btn-warning my-3">Registrar</a>
             </div>
           </div>
     </di>
