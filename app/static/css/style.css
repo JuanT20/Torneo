@@ -31,7 +31,7 @@ nav {
 .contentDiv {
   width: 1157px;
   height: 546;
-  padding: 5px;
+  padding: 20px;
   border-radius: 10px;
   color: #ffffff;
 
@@ -142,7 +142,7 @@ footer {
 /*Estilos cards de la ruta view-torneo*/
 .cardViewTorneo {
   background-color: var(--colorQuinario);
-  width: 240px;
+  width: 200px;
   height: 254px;
   transition: 0.5s;
   cursor: pointer;
