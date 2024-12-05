@@ -5,7 +5,10 @@
   <div class="row text-center ">
     <di class="col">
         <div class="card cardViewTorneo text-center">
-          <img src="{{url_for('static', filename='img/football-team.png')}}" style="width: 100px;", height="100px;" >
+          <div class="image mt-2">
+            <img src="{{url_for('static', filename='img/football-team.png')}}" style="width: 100px;", height="100px;" >
+          </div>
+          
             <div class="card-body">
               <h4 class="card-title">Equipos</h4>
               <a href="/equipos/{{id_torneo}}" class="btn btn-warning my-3">Ver</a>
@@ -14,6 +17,9 @@
     </di>
     <di class="col">
         <div class="card cardViewTorneo">
+          <div class="image mt-2">
+            <img src="{{url_for('static', filename='img/soccer-player.png')}}" style="width: 100px;", height="100px;" >
+          </div>
             <div class="card-body">
               <h4 class="card-title">Partidos</h4>
               <a href="/partidos/{{id_torneo}}" class="btn btn-warning my-3">Ver</a>
@@ -22,6 +28,9 @@
     </di>
     <di class="col">
         <div class="card cardViewTorneo">
+          <div class="image mt-2">
+            <img src="{{url_for('static', filename='img/soccer-field-.png')}}" style="width: 100px;", height="100px;" >
+          </div>
             <div class="card-body">
               <h4 class="card-title">Estadisticas</h4>
               <a href="" class="btn btn-warning my-3">Ver</a>
@@ -30,6 +39,9 @@
     </di>
     <di class="col">
         <div class="card cardViewTorneo">
+          <div class="image mt-2">
+            <img src="{{url_for('static', filename='img/stadium.png')}}" style="width: 100px;", height="100px;" >
+          </div>
             <div class="card-body">
               <h4 class="card-title">Ubicaciones</h4>
               <a href="/ubicacion/{{id_torneo}}" class="btn btn-warning my-3">Registrar</a>
@@ -38,6 +50,9 @@
     </di>
     <di class="col">
         <div class="card cardViewTorneo">
+          <div class="image mt-2">
+            <img src="{{url_for('static', filename='img/whistle.png')}}" style="width: 100px;", height="100px;" >
+          </div>
             <div class="card-body">
               <h4 class="card-title">Arbitros</h4>
               <a href="/arbitro/{{id_torneo}}" class="btn btn-warning my-3">Registrar</a>
@@ -57,3 +72,4 @@
 
   {% endblock %}
 </div>
+

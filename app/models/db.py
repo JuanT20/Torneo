@@ -107,6 +107,21 @@ def delete_tournament(id_torneo):
     cursor = conexion.cursor()
 
     try:
+        # Eliminar partidos del torneo
+        query_torneo_partido = "DELETE FROM partidos WHERE id_torneo = %s"
+        cursor.execute(query_torneo_partido, (id_torneo,))
+        conexion.commit()
+        
+        #Eliminar la ubicaciones del torneo
+        query_torneo_ubicacion = "DELETE FROM ubicaciones WHERE id_torneo = %s"
+        cursor.execute(query_torneo_ubicacion, (id_torneo,))
+        conexion.commit()
+        
+        #Eliminar los arbitros del torneo
+        query_torneo_arbitro = "DELETE FROM arbitros WHERE id_torneo = %s"
+        cursor.execute(query_torneo_arbitro, (id_torneo,))
+        conexion.commit()
+          
         # Eliminar equipos del torneo
         query_torneo_equipo = "DELETE FROM torneo_equipos WHERE id_torneo = %s"
         cursor.execute(query_torneo_equipo, (id_torneo,))

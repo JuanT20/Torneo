@@ -24,39 +24,39 @@ def save_logo(file,upload_folder):
         return None
 
 
-#Funcio para hacer los cruces
-def generar_fixtures(equipos):
-    num_equipos = len(equipos)
+#Funcion para hacer los cruces
+# def generar_fixtures(equipos):
+#     num_equipos = len(equipos)
 
-    # Si el número de equipos es impar, añadimos un "descanso"
-    if num_equipos % 2 != 0:
-        equipos.append({"nombre": "Descanso"})
+#     # Si el número de equipos es impar, añadimos un "descanso"
+#     if num_equipos % 2 != 0:
+#         equipos.append({"nombre": "Descanso"})
 
-    total_rondas = len(equipos) - 1
-    partidos_por_ronda = len(equipos) // 2
-    fixtures = []
+#     total_rondas = len(equipos) - 1
+#     partidos_por_ronda = len(equipos) // 2
+#     fixtures = []
 
-    for ronda in range(total_rondas):
-        partidos = []
+#     for ronda in range(total_rondas):
+#         partidos = []
 
-        for i in range(partidos_por_ronda):
-            equipo_local = equipos[i]
-            equipo_visitante = equipos[len(equipos) - 1 - i]
-            partidos.append({
-                "local": equipo_local["nombre"],
-                "id_local": equipo_local.get("id_equipo"),
-                "visitante": equipo_visitante["nombre"],
-                "id_visitante": equipo_visitante.get("id_equipo")
-            })
+#         for i in range(partidos_por_ronda):
+#             equipo_local = equipos[i]
+#             equipo_visitante = equipos[len(equipos) - 1 - i]
+#             partidos.append({
+#                 "local": equipo_local["nombre"],
+#                 "id_local": equipo_local.get("id_equipo"),
+#                 "visitante": equipo_visitante["nombre"],
+#                 "id_visitante": equipo_visitante.get("id_equipo")
+#             })
 
-        fixtures.append({"ronda": ronda + 1, "partidos": partidos})
+#         fixtures.append({"ronda": ronda + 1, "partidos": partidos})
         
 
-        # Rotar los equipos (excepto el primero que permanece fijo)
-        ultimo = equipos.pop()
-        equipos.insert(1, ultimo)
+#         # Rotar los equipos (excepto el primero que permanece fijo)
+#         ultimo = equipos.pop()
+#         equipos.insert(1, ultimo)
 
-    return fixtures
+#     return fixtures
 
 # def generar_fixtures(equipos):
 #     num_equipos = len(equipos)
@@ -98,3 +98,41 @@ def generar_fixtures(equipos):
 #         equipos.insert(1, ultimo)
 
 #     return fixtures
+
+def generar_fixtures(equipos):
+    num_equipos = len(equipos)
+
+    # Si el número de equipos es impar, añadimos un "descanso" como marcador
+    es_impar = num_equipos % 2 != 0
+    if es_impar:
+        equipos.append({"nombre": "Descanso"})
+
+    total_rondas = len(equipos) - 1
+    partidos_por_ronda = len(equipos) // 2
+    fixtures = []
+
+    for ronda in range(total_rondas):
+        partidos = []
+
+        for i in range(partidos_por_ronda):
+            equipo_local = equipos[i]
+            equipo_visitante = equipos[len(equipos) - 1 - i]
+
+            # Evitar agregar partidos con "Descanso"
+            if equipo_local["nombre"] == "Descanso" or equipo_visitante["nombre"] == "Descanso":
+                continue
+
+            partidos.append({
+                "local": equipo_local["nombre"],
+                "id_local": equipo_local.get("id_equipo"),
+                "visitante": equipo_visitante["nombre"],
+                "id_visitante": equipo_visitante.get("id_equipo")
+            })
+
+        fixtures.append({"ronda": ronda + 1, "partidos": partidos})
+
+        # Rotar los equipos (excepto el primero que permanece fijo)
+        ultimo = equipos.pop()
+        equipos.insert(1, ultimo)
+
+    return fixtures

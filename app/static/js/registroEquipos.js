@@ -66,6 +66,24 @@ document.getElementById("rEquipos").addEventListener("click", function (event) {
   // Obtener el id del torneo desde el formulario o el DOM
   const idTorneo = document.getElementById("id_torneo").value;
 
+  // Validar que todos los nombres de los equipos no estén vacíos
+  const numeroEquipos = formEquipos.querySelectorAll("input[type='text']");
+  let formularioValido = true;
+
+  numeroEquipos.forEach((input) => {
+    if (input.value.trim() === "") {
+      formularioValido = false;
+      input.classList.add("is-invalid"); // Agregar clase para resaltar el error
+    } else {
+      input.classList.remove("is-invalid"); // Quitar clase si es válido
+    }
+  });
+
+  if (!formularioValido) {
+    alert("Por favor, completa todos los nombres de los equipos.");
+    return; // Salir de la función si la validación falla
+  }
+
   try {
     fetch(`/register-equipos/${idTorneo}`, {
       method: "POST",
